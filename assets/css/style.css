@@ -30,12 +30,6 @@ hr {
 	border-color: #1d1d1d;
 }
 
-.nav-tabs-vertical > li.active > a, .nav-tabs-vertical > li.active > a:hover, .nav-tabs-vertical > li.active > a:focus {
-	color: #eeeeee;
-	background-color: rgb(29, 29, 29);
-	border: 0;
-}
-
 .pi {
 	color: #eeeeee;
 }
@@ -217,25 +211,18 @@ footer {
 }
 
 /* nav-vertical-tabs component */
-.nav-tabs-vertical {
-    border-right: 1px solid #ddd;
-}
 
 .nav-tabs-vertical li {
     margin-right: -1px;
 }
 
 .nav-tabs-vertical>li.active>a, .nav-tabs-vertical>li.active>a:hover, .nav-tabs-vertical>li.active>a:focus {
-    color: #555;
+    color: #d65a31;
     cursor: default;
-    background-color: rgb(71, 71, 71);
-    border: 1px solid rgb(255, 255, 255);
-    border-right-color: transparent;
 }
 
 .nav-tabs-vertical>li>a {
     line-height: 1.428571429;
-    border: 1px solid transparent;
     border-radius: 4px 0 0 4px;
 }
 

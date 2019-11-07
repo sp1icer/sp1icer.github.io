@@ -1,3 +1,5 @@
+/* https://colorhunt.co/palette/144399 */
+
 @import url(//fonts.googleapis.com/css?family=Ubuntu:500&subset=latin,latin-ext);
 @import url(//fonts.googleapis.com/css?family=Nova+Mono&display=swap);
 @import url(//fonts.googleapis.com/css?family=Orbitron&display=swap);
@@ -209,25 +211,18 @@ footer {
 }
 
 /* nav-vertical-tabs component */
-.nav-tabs-vertical {
-    border-right: 1px solid #ddd;
-}
 
 .nav-tabs-vertical li {
     margin-right: -1px;
 }
 
 .nav-tabs-vertical>li.active>a, .nav-tabs-vertical>li.active>a:hover, .nav-tabs-vertical>li.active>a:focus {
-    color: #555;
+    color: #d65a31;
     cursor: default;
-    background-color: rgb(71, 71, 71);
-    border: 1px solid rgb(255, 255, 255);
-    border-right-color: transparent;
 }
 
 .nav-tabs-vertical>li>a {
     line-height: 1.428571429;
-    border: 1px solid transparent;
     border-radius: 4px 0 0 4px;
 }
 
