@@ -1,0 +1,250 @@
+@import url(//fonts.googleapis.com/css?family=Ubuntu:500&subset=latin,latin-ext);
+@import url(//fonts.googleapis.com/css?family=Nova+Mono&display=swap);
+@import url(//fonts.googleapis.com/css?family=Orbitron&display=swap);
+
+body{
+	background-color: #1d1d1d;
+	color: #eeeeee;
+}
+
+footer {
+	color: #eeeeee;
+}
+
+footer a {
+	color: #d65a31;
+}
+
+pre {
+	background-color: #1d1d1d;
+	border: 1px solid #eeeeee;
+}
+
+pre span {
+	color: #eeeeee;
+}
+
+hr {
+	border-color: #1d1d1d;
+}
+
+.pi {
+	color: #eeeeee;
+}
+
+.pager li > a, .pager li > span {
+	background-color: #1d1d1d;
+	color: #d65a31;
+	border:0;
+}
+
+.pager .disabled > a, .pager .disabled > a:hover, .pager .disabled > a:focus, .pager .disabled > span {
+	background-color: #1d1d1d;
+	color: #d65a3170;
+	border:0;
+}
+
+.page_number {
+	color: #d65a31;
+}
+
+.highlight .s {
+	color: #d65a31;
+}
+
+.sidebar {
+	position: fixed;
+	top: 0px;
+	padding-top: 10%;
+	background-color: #d65a31;
+	color: #eeeeee;
+}
+
+.sidebar-header {
+	text-align: center;
+	margin-bottom: 10px;
+}
+.sidebar-header .title {
+    font-family: 'Orbitron', sans-serif;
+	letter-spacing: 3px;
+	text-transform: uppercase;
+}
+
+.sidebar-header .title a{
+	text-decoration: none;
+	color: #1d1d1d;
+}
+
+.btn-default {
+	color: #d65a31;
+	background-color: #1d1d1d;
+	border: #1d1d1d;
+}
+
+a.nav-link {
+	padding-bottom: 5px;
+	padding-top: 7px;
+	color: #393e46;
+}
+a.nav-link i{
+	font-size: 16px;
+}
+a.nav-link:hover { color: #393e46; }
+
+#bio {
+	font-family: "Courier New", Courier, monospace;
+	font-size: 14px;
+	color: #1d1d1d;
+	margin: 0 auto;
+	margin-bottom: 10px;
+}
+
+#contact-list li .fa,
+article .share .btn {
+	-o-transition:color .2s ease-out, background 1s ease-in;
+  -ms-transition:color .2s ease-out, background 1s ease-in;
+  -moz-transition:color .2s ease-out, background 1s ease-in;
+  -webkit-transition:color .2s ease-out, background 1s ease-in;
+  transition:color .2s ease-out, background 1s ease-in;
+}
+#contact-list li:hover .fa-twitter,
+article .share .twitter:hover {
+	color: #00ACEE;
+	border-color: #00ACEE;
+}
+#contact-list li:hover .fa-linkedin {
+	color: #1D87BD;
+}
+#contact-list li:hover .fa-envelope {
+	color: #E93E30;
+}
+#contact-list li:hover .fa-pinterest {
+	color: #CC2127;
+}
+#contact-list li:hover .fa-rss {
+	color: #e74c3c;
+}
+article .share .facebook:hover {
+	color: #43609C;
+	border-color: #43609C;
+}
+article .share .gplus:hover {
+	color: #C13929;
+	border-color: #C13929;
+}
+
+#contact-list-secondary {
+	padding-bottom: 10px;
+}
+
+.page-header {
+    font-family: 'Orbitron', sans-serif;
+	color: #d65a31;
+	border: 0;
+}
+
+@media only screen and (min-width: 768px) {
+    .page-header{
+		font-family: 'Orbitron', sans-serif;
+        margin-right: 70px;
+    }
+}
+
+article{
+	margin-bottom: 40px;
+}
+
+.article_body{
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.post-date {
+	color: #d65a31;
+	text-transform: uppercase;
+	font-size: 14px;
+	letter-spacing: 3px;
+}
+
+article {
+	padding: 0 5% 0;
+}
+
+article.home div a, article.home pre a { color: #2c3e50; }
+article.home div a:hover, article.home pre a:hover { color: #2c3e50; text-decoration: none; }
+article img { max-width: 100%; }
+
+h1,h2,h3,h4,h5,h6 { font-family: 'Orbitron', sans-serif; }
+article.home h1,
+article.home h2,
+article.home h3,
+article.home h4,
+article.home h5,
+article.home h6 {
+	font-family: 'Ubuntu', sans-serif;
+	color: #d65a31;
+}
+
+article.home h1 a,
+article.home h2 a,
+article.home h3 a,
+article.home h4 a {
+	color: #d65a31;
+}
+article.home h1 a:hover,
+article.home h2 a:hover,
+article.home h3 a:hover,
+article.home h4 a:hover {
+	color: #e74c3c;
+}
+
+.author .author-image {
+  float: left;
+  margin-right: 20px;
+}
+
+footer {
+	padding-top: 15px;
+	font-family: 'Ubuntu';
+}
+
+/* nav-vertical-tabs component */
+.nav-tabs-vertical {
+    border-right: 1px solid #ddd;
+}
+
+.nav-tabs-vertical li {
+    margin-right: -1px;
+}
+
+.nav-tabs-vertical>li.active>a, .nav-tabs-vertical>li.active>a:hover, .nav-tabs-vertical>li.active>a:focus {
+    color: #555;
+    cursor: default;
+    background-color: rgb(71, 71, 71);
+    border: 1px solid rgb(255, 255, 255);
+    border-right-color: transparent;
+}
+
+.nav-tabs-vertical>li>a {
+    line-height: 1.428571429;
+    border: 1px solid transparent;
+    border-radius: 4px 0 0 4px;
+}
+
+.badge { background: #d65a31; }
+
+#nav-menu{
+    position: fixed;
+    top: 45px;
+    right: 45px;
+    z-index: 2000;
+}
+#nav-menu .dropdown-menu {
+    left: inherit;
+    right: 0px;
+}
+
+ul.dropdown-menu>li>a>i.fa {
+    width: 1.3em;
+}
+

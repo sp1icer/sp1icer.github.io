@@ -1,0 +1,39 @@
+# visit https://github.com/mojombo/jekyll/wiki/Configuration for more settings
+
+paginate: 4 # pagination based on number of posts
+paginate_path: "page:num"
+exclude: ["README.md"] # files to exclude
+highlighter: rouge
+markdown: kramdown
+disqus: 
+google_analytics: sp1icer
+title: sp1icer
+
+defaults:
+  -
+    scope:
+      path: "" # empty string for all files
+    values:
+      title: sp1icer.sec
+
+description: My random infosec ramblings.
+author:
+  name: sp1icer
+  email:
+  github: sp1icer
+  twitter: sp1icer
+  pinterest: 
+  linkedin: 
+  bio: exploit dev, htb, and random red teaming thoughts.
+  email_md5: 
+
+rss_path: feed.xml
+categories_path: categories.html
+tags_path: tags.html
+
+# set it as url of an image
+# sidebar_background_image: https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80
+BASE_PATH:
+
+plugins:
+  - jekyll-paginate
