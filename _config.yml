@@ -9,7 +9,6 @@ permalink: /:categories/:title
 title:            'sp1icer'
 description:      'exploit dev, red team, and random infosec thoughts.'
 url:              https://sp1icer.dev
-baseurl:          '/'
 
 author:
   name:           'sp1icer'
