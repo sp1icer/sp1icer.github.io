@@ -1,39 +1,27 @@
-# visit https://github.com/mojombo/jekyll/wiki/Configuration for more settings
+# Dependencies
+markdown:         redcarpet
+highlighter:      pygments
 
-paginate: 4 # pagination based on number of posts
-paginate_path: "page:num"
-exclude: ["README.md", vendor] # files to exclude
-highlighter: rouge
-markdown: kramdown
-disqus: 
-google_analytics: sp1icer
-title: sp1icer
+# Permalinks
+permalink: /:categories/:title
 
-defaults:
-  -
-    scope:
-      path: "" # empty string for all files
-    values:
-      title: sp1icer.sec
+# Setup
+title:            '::sp1icer'
+description:      'exploit dev, red team, and random infosec thoughts.'
+url:              https://sp1icer.dev
+baseurl:          /
 
-description: My random infosec ramblings.
 author:
-  name: sp1icer
-  email:
-  github: sp1icer
-  twitter: sp1icer
-  pinterest: 
-  linkedin: 
-  bio: exploit dev, ctfs, and random red teaming thoughts.
-  email_md5: 
+  name:           'sp1icer'
+  url:            https://twitter.com/sp1icer
 
-rss_path: feed.xml
-categories_path: categories.html
-tags_path: tags.html
+paginate:         5
 
-# set it as url of an image
-# sidebar_background_image: https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80
-BASE_PATH:
+# Custom vars
 
-plugins:
-  - jekyll-paginate
+github:
+  repo:           https://github.com/sp1icer
+
+plugins: [jekyll-paginate]
+
+excerpt_separator: <!--more-->

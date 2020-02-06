@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+ <title>sp1icer</title>
+ <link href="http://localhost:4000/atom.xml" rel="self"/>
+ <link href="http://localhost:4000/"/>
+ <updated>2020-02-06T10:59:03-06:00</updated>
+ <id>http://localhost:4000</id>
+ <author>
+   <name>sp1icer</name>
+   <email></email>
+ </author>
+
+ 
+ <entry>
+   <title>Welcome!</title>
+   <link href="http://localhost:4000/general/welcome"/>
+   <updated>2020-02-06T00:00:00-06:00</updated>
+   <id>http://localhost:4000/general/welcome</id>
+   <content type="html">&lt;p&gt;&lt;strong&gt;Hi there!&lt;/strong&gt; I&amp;#39;m sp1icer, welcome to my blog. This is going to be a space for me to write up tutorials for anything I come across with CTFs, exploit development, and more. Hopefully I&amp;#39;ll have a few neat things to put out soon - until then, &lt;em&gt;stay tuned!&lt;/em&gt;&lt;/p&gt;
+</content>
+ </entry>
+ 
+
+</feed>

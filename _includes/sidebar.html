@@ -1,63 +1,35 @@
-<!-- sidebar.html -->
-<header class="sidebar-header" role="banner">
-	<a href="{{ site.BASE_PATH }}/">
-		<img src="//www.gravatar.com/avatar/{{site.author.email_md5}}?s=150" class="img-circle" />
-	</a>
-	<h3 class="title">
-        <a href="{{ site.BASE_PATH }}/">{{ site.title }}</a>
-    </h3>
-</header>
+<div class="sidebar">
+  <div class="container sidebar-middle">
+    <div class="sidebar-about">
+      <img src="../public/me_japan.jpg" class="prof-pic">
+      <h1>
+        <a href="{{ site.baseurl }}">
+          {{ site.title }}
+        </a>
+      </h1>
+      <p class="lead">{{ site.description }}</p>
+    </div>
 
-{% if site.author.bio %}
-<div id="bio" class="text-center">
-	{{ site.author.bio }}
-</div>
-{% endif %}
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item{% if page.url == site.baseurl %} active{% endif %}" href="{{ site.baseurl }}">home</a>
 
-<div id="contact-list" class="text-center">
-	<ul class="list-unstyled list-inline">
-		{% if site.author.github %}
-		<li>
-			<a class="btn btn-default btn-sm" href="https://github.com/{{ site.author.github }}">
-				<i class="fa fa-github-alt fa-lg"></i>
-			</a>
-		</li>
-		{% endif %}
-		{% if site.author.twitter %}
-		<li>
-			<a class="btn btn-default btn-sm" href="https://twitter.com/{{ site.author.twitter }}">
-				<i class="fa fa-twitter fa-lg"></i>
-			</a>
-		</li>
-		{% endif %}
-		{% if site.author.email %}
-		<li>
-			<a class="btn btn-default btn-sm" href="mailto:{{ site.author.email }}">
-				<i class="fa fa-envelope fa-lg"></i>
-			</a>
-		</li>
-		{% endif %}
-	</ul>
-	<ul id="contact-list-secondary" class="list-unstyled list-inline">
-		{% if site.author.pinterest %}
-		<li>
-			<a class="btn btn-default btn-sm" href="https://pinterest.com/{{ site.author.pinterest }}">
-				<i class="fa fa-pinterest fa-lg"></i>
-			</a>
-		</li>
-		{% endif %}
-		{% if site.author.linkedin %}
-		<li>
-			<a class="btn btn-default btn-sm" href="https://linkedin.com/in/{{ site.author.linkedin }}">
-				<i class="fa fa-linkedin fa-lg"></i>
-			</a>
-		</li>
-		{% endif %}
-		<li>
-			<a class="btn btn-default btn-sm" href="{{ site.BASE_PATH }}/{{ site.rss_path }}">
-				<i class="fa fa-rss fa-lg"></i>
-			</a>
-		</li>
-	</ul>
+      {% comment %}
+        The code below dynamically generates a sidebar nav of pages with
+        `layout: page` in the front-matter. See readme for usage.
+      {% endcomment %}
+
+      {% assign pages_list = site.pages %}
+      {% for node in pages_list %}
+        {% if node.title != null %}
+          {% if node.layout == "page" %}
+            <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="{{ node.url }}">{{ node.title | downcase }}</a>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+
+    </nav>
+
+    
+  </div>
+  <p class="copyright">&copy; {{ site.time | date: '%Y' }}. All rights reserved.</p>
 </div>
-<!-- sidebar.html end -->
