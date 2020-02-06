@@ -6,7 +6,7 @@ highlighter:      pygments
 permalink: /:categories/:title
 
 # Setup
-title:            '::sp1icer'
+title:            'sp1icer'
 description:      'exploit dev, red team, and random infosec thoughts.'
 url:              https://sp1icer.dev
 baseurl:          '/'
