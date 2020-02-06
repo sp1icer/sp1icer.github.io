@@ -34,6 +34,10 @@
 html {
   font-family: "PT Sans", Helvetica, Arial, sans-serif;
 }
+
+strong {
+  color: #ce6600;
+}
 @media (min-width: 48em) {
   html {
     font-size: 16px;
@@ -283,6 +287,15 @@ a.sidebar-nav-item:focus {
   color: #ce6600;
 }
 
+.theme-base-10 {
+  background-color: #1c1c1c;
+  color: #cccccc;
+}
+
 .about-me-h1 {
+  color: #ce6600;
+}
+
+.post-title {
   color: #ce6600;
 }
