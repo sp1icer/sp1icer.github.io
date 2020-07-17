@@ -21,9 +21,8 @@ description: >- # this means to ignore newlines until "baseurl:"
   random security thoughts, and more await!
 twitter_username: sp1icer
 github_username: sp1icer
-minimal_mistakes_skin: dirt
+minimal_mistakes_skin: dark
 search: true
-logo: "/assets/images/twitterProfilePicture.png"
 
 
 # Build settings
