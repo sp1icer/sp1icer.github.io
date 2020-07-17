@@ -16,9 +16,9 @@
 title: sp1icer
 email: sp1icersec@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
+  This site is dedicated to sp1icer's personalize
+  adventures in the infosec world. CTF writeups, 
+  random security thoughts, and more await!
 twitter_username: sp1icer
 github_username: sp1icer
 minimal_mistakes_skin: dark
@@ -60,7 +60,7 @@ plugins:
 author:
   name   : "Justin"
   avatar : "/assets/images/me_japan.jpg"
-  bio    : "infosec noob, learning exploit dev. eternal shoshin, striving to not be awful at hacking stuff. newly diagnosed w adhd // eJPT, OSCP"
+  bio    : "infosec noob, learning exploit dev. eternal shoshin, striving to not be awful at hacking stuff. adhd squad // eJPT, OSCP"
   links:
     - label: "Twitter"
       icon: "fab fa-fw fa-twitter-square"
