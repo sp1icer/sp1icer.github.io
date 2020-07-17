@@ -1,5 +1,5 @@
 ---
-title: "Welcome to Jekyll!"
+title: "welcome to my site"
 date: 2020-07-17T17:37:31-04:00
 categories:
   - blog
