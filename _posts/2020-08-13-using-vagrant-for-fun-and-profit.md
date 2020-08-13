@@ -89,6 +89,22 @@ That screen shows you what Vagrantfile you should use with the box. You can eith
 
 ### $A BOX MADE FOR OUR OWN SPECIAL IMAGE
 
+If you don't trust the Vagrant cloud images, there is an alternative - creating a box by hand. The bad news it's a tedious process, just like the stone ages - the good news is we only have to do the whole thing once. Let's start with a Ubuntu image, since that's what I showed in the Vagrant cloud section.
+
+1. Download your target Ubuntu ISO.
+2. Create a new VM in your hypervisor of choice using said ISO - make sure to create a user of `vagrant` and password of `vagrant`.
+3. Once installation is done, run `sudo apt-get update && sudo apt-get full-upgrade`.
+4. Reboot the VM.
+5. `sudo apt-get install linux-headers-$(uname -r) build-essential dkms`
+6. Reboot again.
+7. `sudo apt-get install open-vm-tools-desktop fuse -y`
+8. Reboot one more time, just to make sure.
+9. `mkdir -p /home/vagrant/.ssh/`
+10. Download the Vagrant default insecure key: `wget -O /home/vagrant/.ssh/authorized_keys https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant.pub`
+11. `sudo nano /etc/ssh/sshd_config`
+    1. Uncomment and change PasswordAuthentication to no
+    2. Add a line to the end of the file that states "UseDNS no"
+12.  `sudo service ssh restart`
 
 ## >>LOOK MA, NO HANDS!
 (section talking about the automation portion with vagrant)
