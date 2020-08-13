@@ -70,7 +70,7 @@ It's worth noting that the VMWare version of Vagrant costs some money - don't le
 
 ## >>WHAT WE'LL BE BAKING TODAY
 
-Let's start with describing our directory structure for this project:
+Let's start with describing our ending directory structure for this project:
 
 ```
 environments/
@@ -78,10 +78,16 @@ environments/
     |__ packer/
         |__ boxes/
         |__ ubuntu/
+            |__ vagrant-ubuntu-custom-vmx.json
             |__ Vagrantfile.tpl
+            |__ vars-vagrant-ubuntu-custom-vmx.json
     |__ scripts/
         |__ ubuntu/
             |__ comby.sh
+            |__ open-vm-tools.sh
+            |__ python.sh
+            |__ sudoers.sh
+            |__ 
     |__ vagrant
         |__ ubuntu_vc/
             |__ Vagrantfile
@@ -116,23 +122,16 @@ That screen shows you what Vagrantfile you should use with the box. Navigate to 
 
 If you don't trust the Vagrant cloud images, there is an alternative - creating a box by hand. The bad news it's a tedious process, just like the stone ages - the good news is we only have to do the whole thing once. Let's start with a Ubuntu image, since that's what I showed in the Vagrant cloud section.
 
-VERIFY THE INSTRUCTIONS BELOW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 1. Download your target Ubuntu ISO - in my case, Ubuntu Desktop 20.04.
 2. Create a new VM in your hypervisor of choice using said ISO - make sure to create a user of `vagrant` and password of `vagrant`. Also set the HDD to 40GB just in case - we shouldn't even get close to that, but it's a maximum so let's be a bit generous.
 3. Once installation is done, run `sudo apt-get update && sudo apt-get -y full-upgrade`.
 4. Reboot the VM.
 5. `sudo apt-get install -y linux-headers-$(uname -r) build-essential dkms`
 6. Reboot again.
-7. `sudo apt-get install -y open-vm-tools-desktop fuse`
+7. `sudo apt-get install -y open-vm-tools-desktop fuse ssh`
 8. Reboot one more time, just to make sure.
-9. `mkdir -p /home/vagrant/.ssh/`
-10. Download the Vagrant default insecure key: `wget -O /home/vagrant/.ssh/authorized_keys https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant.pub`
-11. `sudo nano /etc/ssh/sshd_config`
-    1. Uncomment and change PasswordAuthentication to no
-12.  `sudo service ssh restart`
-13.  Finally, shut the box down.
-
+9. `sudo service ssh restart`
+10. Finally, shut the box down.
 
 ### $ARTISINAL JSON FILES
 
