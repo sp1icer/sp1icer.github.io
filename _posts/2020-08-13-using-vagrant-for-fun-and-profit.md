@@ -62,11 +62,31 @@ There can be other stuff included as you get more into this - for example, I'm *
 Cool, so we have an idea of how a project is structured and are excited about the future of our personal workflow - what do we need to get started? Depending on your configuration, so of these may vary but here's what I'll use for the rest of the tutorial:
 
 * VMWare Workstation Pro
-* Vagrant
+* [Vagrant](https://vagrantup.com)
 * [vagrant-vmware-utility](https://www.vagrantup.com/vmware#buy-now)
-* Packer
+* [Packer](https://www.packer.io/)
 
 It's worth noting that the VMWare version of Vagrant costs some money - don't let that deter you. They offer the Virtualbox plugin for free, and it works just the same. All code that I show should be relatively easy to port over to a Virtualbox-based setup. Now we'll start with making a simple box!
+
+## >>WHAT WE'LL BE BAKING TODAY
+
+Let's start with describing our directory structure for this project:
+
+```
+environments/
+    |__ extras/
+    |__ packer/
+        |__ boxes/
+        |__ ubuntu/
+    |__ scripts/
+        |__ ubuntu/
+            |__ comby.sh
+    |__ vagrant
+        |__ubuntu/
+            |__ Vagrantfile
+```
+
+Essentially, this will end up being a simple Ubuntu box that has downloaded Comby and is ready to use it. The final setup will be hosted on my GitHub for you to browse through, but I recommend following along and manually performing this.
 
 ## >>MAKING A GOLDEN IMAGE LIKE A CHEATER
 
@@ -105,6 +125,9 @@ If you don't trust the Vagrant cloud images, there is an alternative - creating 
     1. Uncomment and change PasswordAuthentication to no
     2. Add a line to the end of the file that states "UseDNS no"
 12.  `sudo service ssh restart`
+13.  Finally, shut the box down.
+
+After this whole process, we have a pretty decent setup for a gold image - I recommend not adding more customization than necessary at this point. Here's where we finally use Packer - it will bundle up the box for us and make it ready to use in Vagrant. To do this, navigate to the `packer/` directory and either make/navigate into the `ubuntu` folder there.
 
 ## >>LOOK MA, NO HANDS!
 (section talking about the automation portion with vagrant)
