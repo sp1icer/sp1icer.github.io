@@ -78,15 +78,18 @@ environments/
     |__ packer/
         |__ boxes/
         |__ ubuntu/
+            |__ Vagrantfile.tpl
     |__ scripts/
         |__ ubuntu/
             |__ comby.sh
     |__ vagrant
-        |__ubuntu/
+        |__ ubuntu_vc/
+            |__ Vagrantfile
+        |__ ubuntu_custom/
             |__ Vagrantfile
 ```
 
-Essentially, this will end up being a simple Ubuntu box that has downloaded Comby and is ready to use it. The final setup will be hosted on my GitHub for you to browse through, but I recommend following along and manually performing this.
+Essentially, this will end up being a simple Ubuntu box that has downloaded Comby and is ready to use it. The final setup will be hosted [on my GitHub](https://github.com/sp1icer/vagrant-for-fun-and-profit) for you to browse through, but I recommend following along and manually performing this. Also - as you do this, you should include a line in your `.gitignore` to not track any files in `boxes/*`. They're just generically not worth putting into GitHub (and also are a decent size)
 
 ## >>MAKING A GOLDEN IMAGE LIKE A CHEATER
 
@@ -105,37 +108,215 @@ Basically, this service lets us browse boxes that other people have made and jus
 
 ![Vagrant box instructions](../assets/images/vagrant-for-fun/vagrant-cloud-instructions.png)
 
-That screen shows you what Vagrantfile you should use with the box. You can either copy and paste it, or you can navigate to the directory you want to place your new VM in and run `vagrant init ubuntu/trusty64`. Once you do that, you'll have a shiny new Vagrantfile in the current directory and can just type `vagrant up` - the box will automagically be created! Simple, short, and sweet - our favorite.
+That screen shows you what Vagrantfile you should use with the box. Navigate to `/vagrant/ubuntu_vc`. You can either copy and paste it into a Vagrantfile, or you can run `vagrant init hashicorp/trusty64`. Once you do that, you'll have a shiny new Vagrantfile in the current directory and can just type `vagrant up` - the box will automagically be created! Simple, short, and sweet - our favorite. We'll get to customizing the Vagrantfile in a few sections, so kick back for now.
+
+![vagrant init, super easy!](../assets/images/vagrant-for-fun/vagrant-init-hashicorp.png)
 
 ### $A BOX MADE FOR OUR OWN SPECIAL IMAGE
 
 If you don't trust the Vagrant cloud images, there is an alternative - creating a box by hand. The bad news it's a tedious process, just like the stone ages - the good news is we only have to do the whole thing once. Let's start with a Ubuntu image, since that's what I showed in the Vagrant cloud section.
 
-1. Download your target Ubuntu ISO.
-2. Create a new VM in your hypervisor of choice using said ISO - make sure to create a user of `vagrant` and password of `vagrant`.
-3. Once installation is done, run `sudo apt-get update && sudo apt-get full-upgrade`.
+VERIFY THE INSTRUCTIONS BELOW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+1. Download your target Ubuntu ISO - in my case, Ubuntu Desktop 20.04.
+2. Create a new VM in your hypervisor of choice using said ISO - make sure to create a user of `vagrant` and password of `vagrant`. Also set the HDD to 40GB just in case - we shouldn't even get close to that, but it's a maximum so let's be a bit generous.
+3. Once installation is done, run `sudo apt-get update && sudo apt-get -y full-upgrade`.
 4. Reboot the VM.
-5. `sudo apt-get install linux-headers-$(uname -r) build-essential dkms`
+5. `sudo apt-get install -y linux-headers-$(uname -r) build-essential dkms`
 6. Reboot again.
-7. `sudo apt-get install open-vm-tools-desktop fuse -y`
+7. `sudo apt-get install -y open-vm-tools-desktop fuse`
 8. Reboot one more time, just to make sure.
 9. `mkdir -p /home/vagrant/.ssh/`
 10. Download the Vagrant default insecure key: `wget -O /home/vagrant/.ssh/authorized_keys https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant.pub`
 11. `sudo nano /etc/ssh/sshd_config`
     1. Uncomment and change PasswordAuthentication to no
-    2. Add a line to the end of the file that states "UseDNS no"
 12.  `sudo service ssh restart`
 13.  Finally, shut the box down.
 
-After this whole process, we have a pretty decent setup for a gold image - I recommend not adding more customization than necessary at this point. Here's where we finally use Packer - it will bundle up the box for us and make it ready to use in Vagrant. To do this, navigate to the `packer/` directory and either make/navigate into the `ubuntu` folder there.
+
+### $ARTISINAL JSON FILES
+
+After this whole process, we have a pretty decent setup for a gold image - I recommend not adding more customization than necessary at this point. Here's where we finally use Packer - it will bundle up the box for us and make it ready to use in Vagrant. To do this, navigate to the `packer/` directory and either make/navigate into the `ubuntu_custom` folder there. We'll need a file to tell Packer what to do and how to handle the data - for this, we use the [Packer vmware-vmx provider.](https://www.packer.io/docs/builders/vmware-vmx.html) This file is going to be a JSON file that holds all changes to make to the base image before packaging it for Vagrant consumption. Name this one something like `vagrant-ubuntu-custom-vmx.json`.
+
+```JSON
+{
+  "builders": [
+    {
+      "type": "vmware-vmx",
+      "source_path": ">>ENTER THE FILE PATH TO YOUR ubuntu.vmx ON DISK HERE!!!",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_timeout": "10000s",
+      "shutdown_command": "echo vagrant | sudo shutdown -hP now"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S bash '{{ .Path }}'",
+      "expect_disconnect": true,
+      "script": "../../scripts/ubuntu/update.sh",
+      "valid_exit_codes": [0,1]
+    },
+    {
+      "type": "shell",
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S bash '{{ .Path }}'",
+      "expect_disconnect": true,
+      "script": "../../scripts/ubuntu/open-vm-tools.sh"
+    }, 
+    {
+      "type": "shell",
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S bash '{{ .Path }}'",
+      "expect_disconnect": true,
+      "scripts": 
+      [
+        "../../scripts/ubuntu/vagrant.sh",
+        "../../scripts/ubuntu/sudoers.sh",
+        "../../scripts/ubuntu/python.sh"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "vagrantfile_template": "Vagrantfile.tpl",
+      "output": "../boxes/{{ user `vm_name` }}.box"
+    }
+  ]
+}
+```
+
+**NOTE**: For all the Windows users out there - when you do the file path to your `.vmx` file, DON'T follow the Windows standard of using backslashes. Use forward slashes like you would on Unix hosts.{: .notice--warning}
+
+It also has a corresponding vars file. Name this one `vars-vagrant-ubuntu-custom-vmx.json`.
+
+```JSON
+{
+    "vm_name": "vagrant-ubuntu-custom",
+    "box_name" : "vagrant-ubuntu-custom", 
+    "box_desc" : "Vagrant for fun and profit Ubuntu template image."
+}
+```
+
+Looking back in the `vagrant-ubuntu-custom-vmx.json`, you'll see the line `"output": "../boxes/{{ user 'vm_name' }}.box"`. Anywhere you see the double braces, Packer automatically pulls from the defined variables file. You'll specify this when building by means of a command-line switch called `--var-file`. 
+
+### $TIME TO BE A SCRIPT KIDDIE
+
+The keen-eyed among you have noticed that there are references to scripts in the `scripts/` folder. We've now got to make them. Thankfully, they're extremely short and are standard if you've done quite a bit of Linux admin stuff. In order seen above:
+
+`update.sh:`
+ ```bash
+#!/bin/bash
+
+apt-get update && apt-get -y full-upgrade
+[ -f /var/run/reboot-required ] && reboot -f
+ ```
+
+`open-vm-tools.sh:`
+```bash
+#!/bin/bash -eux
+
+apt-get install -y --reinstall open-vm-tools-desktop fuse
+reboot
+```
+
+`vagrant.sh:`
+```bash
+#!/bin/bash -eux
+
+# Add the vagrant insecure pub key
+mkdir /home/vagrant/.ssh
+wget -O /home/vagrant/.ssh/authorized_keys https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant.pub
+chmod 0700 /home/vagrant/.ssh/
+chmod 0600 /home/vagrant/.ssh/authorized_keys
+chown -R vagrant:vagrant /home/vagrant/.ssh/
+
+# Password-less sudo for vagrant user
+echo 'vagrant ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/vagrant
+chmod 0440 /etc/sudoers.d/vagrant
+
+# SSH tweak
+echo 'UseDNS no' >> /etc/ssh/sshd_config
+
+systemctl restart sshd
+```
+
+`sudoers.sh:`
+```bash
+#!/bin/bash -eux
+
+echo 'vagrant ALL=(ALL) NOPASSWD:ALL' >/etc/sudoers.d/99_vagrant;
+chmod 440 /etc/sudoers.d/99_vagrant;
+```
+
+`python.sh:`
+```bash
+#!/bin/bash -eux
+
+apt-get install python3 python3-pip -y
+```
+
+I'm not going to go through and explain these individually, so if you don't understand it's time to practice some Google-fu. One important thing to note, however, is the usage of `expect_disconnect` and `valid_exit_codes` in `vagrant-ubuntu-custom-vmx.json` - these prevent Vagrant from losing connection when services restart and return exit codes different than normal. The exit codes **specifically** are useful with updating, as bash returning that there's nothing to update would make Packer exit thinking something went wrong.
+
+### $PACK IT UP AND GO HOME
+
+Alright, so we've now *finally* made it to the end of the Packer section. Let's issue the final command to receive our shiny, newly-packaged box: `packer build --var-file='vars-vagrant-ubuntu-custom-vmx.json' vagrant-ubuntu-custom-vmx.json`. If all goes according to plan you should see the following below:
+
+INSERT IMAGE HERE
 
 ## >>LOOK MA, NO HANDS!
-(section talking about the automation portion with vagrant)
 
+The good news - we're halfway there. The bad news? We're only halfway there. We still have quite a bit of Vagrant to cover, and I'm only scratching the surface. It's okay though - let's start really digging in and customizing our new box.
+
+To start, we're going to examine our Vagrantfile in `vagrant/ubuntu_vc/` - keep in mind that the same changes will go across both versions. There shouldn't be any difference from this point forward.
+
+Starting things off, there's a TON of stuff commented out. I highly recommend reading through it, but one of the first things that we'll need to uncomment is the switch to enable the GUI. It should be under a block that starts with `config.vm.provider "virtualbox"`. Uncomment until the nearest `end` statement, and then we'll make our first change so that we're using "vmware_desktop" instead of "virtualbox". Next, up the memory to 4096 - we'll keep it low for now just so we can test without resource restrictions being an issue. At this point, feel free to remove the remaining commented lines - you should end up with a file *very* similar to this:
+
+```ruby
+Vagrant.configure("2") do |config|
+    config.vm.box = "vagrant-ubuntu-custom"
+    config.vm.provider "virtualbox" do |vb|
+      # Display the VirtualBox GUI when booting the machine
+      vb.gui = true
+    
+      # Customize the amount of memory on the VM:
+      vb.memory = "4096"
+    end
+end
+```
+Go ahead and execute a `vagrant up` from this directory. You should see Vagrant start performing its magic by opening VMWare, then a virtual machine is created and added to your machines list. It then boots it and...that's it. That's because we haven't told Vagrant to provision anything but the VM yet, so let's go ahead and add a script called comby.sh to the `scripts/` directory.
+
+```bash
+#!/bin/bash
+
+bash <(curl -sL get.comby.dev)
+```
+
+Not very exciting, I know. That script was taken directly off the Comby website. To add it to our `Vagrantfile`, we drop a provision line in like so:
+
+```ruby
+Vagrant.configure("2") do |config|
+    config.vm.box = "vagrant-ubuntu-custom"
+    config.vm.provider "virtualbox" do |vb|
+      # Display the VirtualBox GUI when booting the machine
+      vb.gui = true
+    
+      # Customize the amount of memory on the VM:
+      vb.memory = "4096"
+    end
+    config.vm.provision "shell", path: "../../scripts/ubuntu/comby.sh", name: "comby.sh", privileged: false
+end
+```
+
+Now that we've done that we need to re-test our build. My personal preference is to do a `vagrant destroy -f` to completely remove the box, then just type `vagrant up` again. Now our terminal output should look a little different, showing the Comby install process happening:
+
+INSERT PICTURE OF TERMINAL HERE
 
 ## >>NOW FOR MY NEXT TRICK...
 (section detailing multi-machine configurations)
 
+
+## >>RECAP
 
 ## >>REFERENCES
 
