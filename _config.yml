@@ -64,7 +64,7 @@ plugins:
   - jekyll-feed
   - jemoji
   - jekyll-include-cache
-  - kramdown, "~> 2.3.0"
+  - kramdown
 
 author:
   name      : "Justin"
