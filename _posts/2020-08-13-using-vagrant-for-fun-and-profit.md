@@ -16,6 +16,8 @@ tags:
 
 Have you ever decided to nuke your penetration testing machine because it got too polluted? Maybe you needed multiple configurations for different clients or use cases (such as web app hacking, hardware hacking) that needed specialized tools? Or maybe you're the type of person who needs to quickly initialize a small test network that has a few clients, such as spinning up an instance of [a small Caldera network](https://github.com/mitre/caldera)? If any of these situations sound familiar, it might be time to migrate your workflow over to include [Vagrant](https://www.vagrantup.com/)!
 
+As you go throughout this meager tutorial, keep in mind that I'm self-taught - I'm by no means a DevOps expert nor do I know everything there is to know about Vagrant. I'm just a huge nerd that enjoys the Hashicorp ecosystem for automation!
+
 ## >>WHAT IS VAGRANT?
 
 Vagrant is a piece of free-and-open-source software (FOSS) that I've been using for around 1.5 years now - and it's absolutely changed how I do things both at work and at home. I'll let Hashicorp explain it themselves:
@@ -70,7 +72,7 @@ It's worth noting that the VMWare version of Vagrant costs some money - don't le
 
 ## >>WHAT WE'LL BE BAKING TODAY
 
-Let's start with describing our ending directory structure for this project:
+Let's start with describing our ending directory structure state for this project:
 
 ```
 environments/
@@ -87,7 +89,8 @@ environments/
             |__ open-vm-tools.sh
             |__ python.sh
             |__ sudoers.sh
-            |__ 
+            |__ update.sh
+            |__ vagrant.sh
     |__ vagrant
         |__ ubuntu_vc/
             |__ Vagrantfile
@@ -97,9 +100,9 @@ environments/
 
 Essentially, this will end up being a simple Ubuntu box that has downloaded Comby and is ready to use it. The final setup will be hosted [on my GitHub](https://github.com/sp1icer/vagrant-for-fun-and-profit) for you to browse through, but I recommend following along and manually performing this. Also - as you do this, you should include a line in your `.gitignore` to not track any files in `boxes/*`. They're just generically not worth putting into GitHub (and also are a decent size)
 
-## >>MAKING A GOLDEN IMAGE LIKE A CHEATER
+## >>MAKING A GOLDEN IMAGE (LIKE A CHEATER)
 
-Now that we've got our project set up, we'll start making our gold image - as Vagrant would call it, a "base box". There are ~~two~~ three ways to do a base box - Vagrant cloud, creating our own, and using Packer to build one from the ground up. We'll skip that last one and cover the first two because they're easier to get a grasp on.
+Now that we've got our project set up, we'll start making our gold image - as Vagrant would call it, a "base box". There are ~~two~~ three ways to do a base box - Vagrant cloud, creating our own, and using Packer to build one from the ground up via kickstart/preseed files. We'll skip that last one and cover the first two because they're *far* easier to get a grasp on.
 
 ### $IT'S NOT A COMPUTER, IT'S THE CLOUD!
 
@@ -110,7 +113,7 @@ You don't need a Vagrant Cloud account to use public boxes.
 
 ![Vagrant cloud interface](../assets/images/vagrant-for-fun/vagrant-cloud.png)
 
-Basically, this service lets us browse boxes that other people have made and just use them - pretty fantastic! I know the more paranoid among you don't trust this - and for good reason, as you don't control the box that's being loaded - so that's why we have the second category. For those who don't mind, instructions are straightforward from this point; click on the box that you're interested in and be greeted with the following screen:
+Basically, this service lets us browse boxes that other people have made and just use them - pretty fantastic! I know the more paranoid among you don't trust this - and for good reason, as you don't control the box that's being loaded - so that's why we have the do-it-ourself method. For those who don't mind using public boxes, instructions are straightforward from this point; click on the box that you're interested in and be greeted with the following screen:
 
 ![Vagrant box instructions](../assets/images/vagrant-for-fun/vagrant-cloud-instructions.png)
 
@@ -128,10 +131,9 @@ If you don't trust the Vagrant cloud images, there is an alternative - creating 
 4. Reboot the VM.
 5. `sudo apt-get install -y linux-headers-$(uname -r) build-essential dkms`
 6. Reboot again.
-7. `sudo apt-get install -y open-vm-tools-desktop fuse ssh`
-8. Reboot one more time, just to make sure.
-9. `sudo service ssh restart`
-10. Finally, shut the box down.
+7. `sudo apt-get install -y open-vm-tools-desktop fuse ssh`.
+8. `sudo service ssh restart`
+9.  Finally, shut the box down.
 
 ### $ARTISINAL JSON FILES
 
@@ -261,7 +263,11 @@ I'm not going to go through and explain these individually, so if you don't unde
 
 Alright, so we've now *finally* made it to the end of the Packer section. Let's issue the final command to receive our shiny, newly-packaged box: `packer build --var-file='vars-vagrant-ubuntu-custom-vmx.json' vagrant-ubuntu-custom-vmx.json`. If all goes according to plan you should see the following below:
 
-INSERT IMAGE HERE
+![Packer knows what it's doing, unlike me most times](../assets/images/vagrant-for-fun/packer-build-success.png)
+
+Once we get through with that part, we have a tiny amount left - we have to actually add the box to Vagrant itself so that it knows where to find it. Navigate back to the `packer/boxes/` directory and look inside - you should see your box sitting there. To add it to Vagrant, do a `vagrant box add --name vagrant-ubuntu-custom .\vagrant-ubuntu-custom.box` and you're good to go!
+
+**Note**: This step may take a while. Feel free to go make a coffee, watch a TV show, play video games - I'm not your mom. If it's still running after a while, though, try hitting Ctrl+C - for whatever reason I've seen this complete builds that seem to be stuck.{: .notice--info}
 
 ## >>LOOK MA, NO HANDS!
 
@@ -274,7 +280,7 @@ Starting things off, there's a TON of stuff commented out. I highly recommend re
 ```ruby
 Vagrant.configure("2") do |config|
     config.vm.box = "vagrant-ubuntu-custom"
-    config.vm.provider "virtualbox" do |vb|
+    config.vm.provider "vmware_desktop" do |vb|
       # Display the VirtualBox GUI when booting the machine
       vb.gui = true
     
@@ -283,6 +289,7 @@ Vagrant.configure("2") do |config|
     end
 end
 ```
+
 Go ahead and execute a `vagrant up` from this directory. You should see Vagrant start performing its magic by opening VMWare, then a virtual machine is created and added to your machines list. It then boots it and...that's it. That's because we haven't told Vagrant to provision anything but the VM yet, so let's go ahead and add a script called comby.sh to the `scripts/` directory.
 
 ```bash
@@ -296,7 +303,7 @@ Not very exciting, I know. That script was taken directly off the Comby website.
 ```ruby
 Vagrant.configure("2") do |config|
     config.vm.box = "vagrant-ubuntu-custom"
-    config.vm.provider "virtualbox" do |vb|
+    config.vm.provider "vmware_desktop" do |vb|
       # Display the VirtualBox GUI when booting the machine
       vb.gui = true
     
@@ -311,9 +318,46 @@ Now that we've done that we need to re-test our build. My personal preference is
 
 INSERT PICTURE OF TERMINAL HERE
 
-## >>NOW FOR MY NEXT TRICK...
-(section detailing multi-machine configurations)
+When all is said and done - you have a fully-functioning, extendable Ubuntu 20.04 image ready to rock with Comby installed. But we're not done yet...
 
+## >>NOW FOR MY NEXT TRICK...
+
+What, you thought we'd stop at *one* measly machine? Nope, try again - the next part of the tutorial is going to show how to run multi-machine setups with Vagrant. This section will teach a few nifty tricks by walking you through setting up Caldera hosts and a Linux client, as well as a victim. To start, we'll re-visit our directory structure:
+
+```
+environments/
+    |__ extras/
+    |__ packer/
+        |__ boxes/
+        |__ ubuntu/
+            |__ vagrant-ubuntu-custom-vmx.json
+            |__ Vagrantfile.tpl
+            |__ vars-vagrant-ubuntu-custom-vmx.json
+    |__ scripts/
+        |__ ubuntu/
+            |__ comby.sh
+            |__ open-vm-tools.sh
+            |__ python.sh
+            |__ sudoers.sh
+            |__ update.sh
+            |__ vagrant.sh
+    |__ vagrant
+        |__ ubuntu_vc/
+            |__ Vagrantfile
+        |__ ubuntu_custom/
+            |__ Vagrantfile
+        |__ caldera_network/
+            |__ Vagrantfile
+```
+
+For the most part, it's identical. We've added a `caldera_network/` directory with its own `Vagrantfile`. Wait, whaaaaaa? One Vagrantfile? Yup, you read that right - multi-machine networks don't require separate Vagrantfiles for each machine. Speaking of machines, you're now able to create your own so go crazy - make whichever you please or add in ones from the Vagrant Cloud. I'll be using the following setup for machines:
+
+![Simple Caldera network map](../assets/images/vagrant-for-fun/caldera-network.png)
+
+Since box choice doesn't matter, I'm going to run the server on `bento/ubuntu-20.04`, the client to access the web interface on our custom Ubuntu box we built, and both victims on `bento/ubuntu-20.04`. It'll be a bit of a doozy to set up this `Vagrantfile`, but let's get to it.
+
+```ruby
+```
 
 ## >>RECAP
 
