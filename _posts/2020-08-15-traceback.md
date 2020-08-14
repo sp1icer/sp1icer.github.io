@@ -155,8 +155,6 @@ Personally, I really enjoyed the box - thanks to Xh4H for creating it. Remember 
 
 \- sp1icer
 
-## >>VIDEO TRANSMISSION
-
 ## >>REFERENCES
 
 Using nc for file transfers: https://nakkaya.com/2009/04/15/using-netcat-for-file-transfers/  
