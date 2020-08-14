@@ -3,8 +3,6 @@ title: "Vagrant: For Fun and Profit"
 date: 2020-08-11
 classes: wide
 excerpt_separator: <!--more-->
-header:
-  image: /assets/images/vagrant-for-fun/vagrant-banner.jpg
 categories:
   - infrastructure
 tags:
