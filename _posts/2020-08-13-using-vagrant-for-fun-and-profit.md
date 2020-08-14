@@ -581,13 +581,13 @@ I really hope you enjoyed my article/dissertation/yelling into the abyss/sharing
 
 ## >>REFERENCES
 
-Vagrant: https://www.vagrantup.com/  
-Vagrant Intro Docs: https://www.vagrantup.com/intro  
-Vagrant Full Docs: https://www.vagrantup.com/docs  
-Packer: https://www.packer.io/  
-Packer Intro Docs: https://www.packer.io/intro  
-Packer Guides: https://www.packer.io/guides  
-Packer Full Docs: https://www.packer.io/docs  
-MITRE Caldera: https://github.com/mitre/caldera  
-Caldera config file: https://github.com/mitre/caldera/blob/master/conf/default.yml  
-Creating Windows base boxes: https://huestones.co.uk/2015/08/creating-a-windows-10-base-box-for-vagrant-with-virtualbox/  
+Vagrant: [https://www.vagrantup.com/](https://www.vagrantup.com/)  
+Vagrant Intro Docs: [https://www.vagrantup.com/intro](https://www.vagrantup.com/intro)  
+Vagrant Full Docs: [https://www.vagrantup.com/docs]J(https://www.vagrantup.com/docs)  
+Packer: [https://www.packer.io/](https://www.packer.io/)  
+Packer Intro Docs: [https://www.packer.io/intro](https://www.packer.io/intro)  
+Packer Guides: [https://www.packer.io/guides](https://www.packer.io/guides)  
+Packer Full Docs: [https://www.packer.io/docs](https://www.packer.io/docs)  
+MITRE Caldera: [https://github.com/mitre/caldera](https://github.com/mitre/caldera)  
+Caldera config file: [https://github.com/mitre/caldera/blob/master/conf/default.yml](https://github.com/mitre/caldera/blob/master/conf/default.yml)  
+Creating Windows base boxes: [https://huestones.co.uk/2015/08/creating-a-windows-10-base-box-for-vagrant-with-virtualbox/](https://huestones.co.uk/2015/08/creating-a-windows-10-base-box-for-vagrant-with-virtualbox/)  
