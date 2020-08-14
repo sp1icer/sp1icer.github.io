@@ -1,6 +1,8 @@
 ---
 title: "Vagrant: For Fun and Profit"
 date: 2020-08-11
+classes: wide
+excerpt_separator: <!--more-->
 header:
   image: /assets/images/vagrant-for-fun/vagrant-banner.jpg
 categories:
@@ -16,6 +18,7 @@ tags:
 
 Have you ever decided to nuke your penetration testing machine because it got too polluted? Maybe you needed multiple configurations for different clients or use cases (such as web app hacking, hardware hacking) that needed specialized tools? Or maybe you're the type of person who needs to quickly initialize a small test network that has a few clients, such as spinning up an instance of [a small Caldera network?](https://github.com/mitre/caldera) If any of these situations sound frustrating and tedious, it might be time to migrate your workflow over to include [Vagrant!](https://www.vagrantup.com/)
 
+<!--more-->
 **NOTE**: As you go throughout this tutorial, keep in mind that I'm self-taught - I'm by no means a DevOps expert nor do I know everything there is to know about Vagrant. I'm just a huge nerd that enjoys the Hashicorp ecosystem for automation!
 
 ## >> WHAT IS VAGRANT?
