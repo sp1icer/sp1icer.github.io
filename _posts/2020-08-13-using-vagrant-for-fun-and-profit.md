@@ -106,6 +106,8 @@ Now that we've got our project set up, we'll start making our gold image - as Va
 
 ### $IT'S NOT A COMPUTER, IT'S THE CLOUD!
 
+**NOTE**: This method is going to produce different results from doing it DIY - you won't have a desktop environment, for example. This method will pull down a build of Ubuntu server. Just keep that in mind as you go forth using Vagrant Cloud.{: .notice--warning}
+
 So Vagrant cloud is essentially a repository for already-created boxes, both in public and private (for money). I'll once again defer to Hashicorp for the better definition:
 
 > Vagrant Cloud serves a public, searchable index of Vagrant boxes. It's easy to find boxes you can use with Vagrant that contain the technologies you need for a Vagrant environment.  
@@ -120,6 +122,8 @@ Basically, this service lets us browse boxes that other people have made and jus
 That screen shows you what Vagrantfile you should use with the box. Navigate to `/vagrant/ubuntu_vc`. You can either copy and paste it into a Vagrantfile, or you can run `vagrant init hashicorp/trusty64`. Once you do that, you'll have a shiny new Vagrantfile in the current directory and can just type `vagrant up` - the box will automagically be created! Simple, short, and sweet - our favorite. We'll get to customizing the Vagrantfile in a few sections, so kick back for now.
 
 ![vagrant init, super easy!](../assets/images/vagrant-for-fun/vagrant-init-hashicorp.png)
+
+It's also worth noting that every time you add in a new box from Vagrant Cloud, your machine saves it locally on disk under `$HOME/.vagrant.d/` - so be careful if you have space limitations. Some VMs may not need *much* space, but they definitely add up!
 
 ### $A BOX MADE FOR OUR OWN SPECIAL IMAGE
 
@@ -275,13 +279,13 @@ The good news - we're halfway there. The bad news? We're only halfway there. We 
 
 To start, we're going to examine our Vagrantfile in `vagrant/ubuntu_vc/` - keep in mind that the same changes will go across both versions. There shouldn't be any difference from this point forward.
 
-Starting things off, there's a TON of stuff commented out. I highly recommend reading through it, but one of the first things that we'll need to uncomment is the switch to enable the GUI. It should be under a block that starts with `config.vm.provider "virtualbox"`. Uncomment until the nearest `end` statement, and then we'll make our first change so that we're using "vmware_desktop" instead of "virtualbox". Next, up the memory to 4096 - we'll keep it low for now just so we can test without resource restrictions being an issue. At this point, feel free to remove the remaining commented lines - you should end up with a file *very* similar to this:
+Starting things off, there's a TON of stuff commented out. I highly recommend reading through it, but one of the first things that we'll need to uncomment is the switch to enable the GUI. It should be under a block that starts with `config.vm.provider "virtualbox"`. Uncomment until the nearest `end` statement, and then we'll make our first change so that we're using "vmware_desktop" instead of "virtualbox". Next, set the memory to 4096 - we'll keep it low for now just so we can test without resource restrictions being an issue. At this point, feel free to remove the remaining commented lines - you should end up with a file *very* similar to this:
 
 ```ruby
 Vagrant.configure("2") do |config|
     config.vm.box = "vagrant-ubuntu-custom"
     config.vm.provider "vmware_desktop" do |vb|
-      # Display the VirtualBox GUI when booting the machine
+      # Display the VMWare GUI when booting the machine
       vb.gui = true
     
       # Customize the amount of memory on the VM:
@@ -295,16 +299,17 @@ Go ahead and execute a `vagrant up` from this directory. You should see Vagrant 
 ```bash
 #!/bin/bash
 
+echo vagrant | sudo -S apt-get install -y curl
 bash <(curl -sL get.comby.dev)
 ```
 
-Not very exciting, I know. That script was taken directly off the Comby website. To add it to our `Vagrantfile`, we drop a provision line in like so:
+Not very exciting, I know. That script was taken directly off the Comby website. To add a bash script to our `Vagrantfile`, we drop a "provision" line in like so:
 
 ```ruby
 Vagrant.configure("2") do |config|
     config.vm.box = "vagrant-ubuntu-custom"
     config.vm.provider "vmware_desktop" do |vb|
-      # Display the VirtualBox GUI when booting the machine
+      # Display the VMWare GUI when booting the machine
       vb.gui = true
     
       # Customize the amount of memory on the VM:
@@ -314,13 +319,13 @@ Vagrant.configure("2") do |config|
 end
 ```
 
-Now that we've done that we need to re-test our build. My personal preference is to do a `vagrant destroy -f` to completely remove the box, then just type `vagrant up` again. Now our terminal output should look a little different, showing the Comby install process happening:
+Now that we've done that we need to re-test our build. My personal preference is to do a `vagrant destroy -f` to completely remove the box, then just type `vagrant up` again. Not sure why I do that - it's probably the least efficient - but it puts my mind at ease. Now our terminal output should look a little different, showing the Comby install process happening:
 
-INSERT PICTURE OF TERMINAL HERE
+![Comby with special colors in the terminal!](../assets/images/vagrant-for-fun/comby-output.png)
 
-When all is said and done - you have a fully-functioning, extendable Ubuntu 20.04 image ready to rock with Comby installed. But we're not done yet...
+When all is said and done - you have a fully-functioning, extendable Ubuntu 20.04 image ready to rock with Comby installed. This is far from over, though.
 
-## >>NOW FOR MY NEXT TRICK...
+## >>FOR MY NEXT TRICK...
 
 What, you thought we'd stop at *one* measly machine? Nope, try again - the next part of the tutorial is going to show how to run multi-machine setups with Vagrant. This section will teach a few nifty tricks by walking you through setting up Caldera hosts and a Linux client, as well as a victim. To start, we'll re-visit our directory structure:
 
@@ -357,10 +362,123 @@ For the most part, it's identical. We've added a `caldera_network/` directory wi
 Since box choice doesn't matter, I'm going to run the server on `bento/ubuntu-20.04`, the client to access the web interface on our custom Ubuntu box we built, and both victims on `bento/ubuntu-20.04`. It'll be a bit of a doozy to set up this `Vagrantfile`, but let's get to it.
 
 ```ruby
+Vagrant.configure("2") do |config|
+    
+    # Caldera server setup.
+    config.vm.define "caldera" do |subconfig|
+        subconfig.vm.box = "bento/ubuntu-20.04"
+        subconfig.vm.network :private_network, ip: "192.168.33.10"
+        subconfig.vm.provider :vmware_desktop do |web|
+            web.gui = true
+            web.vmx["memsize"] = "2048"
+            web.vmx["numvcpus"] = "1"
+            web.vmx["displayname"] = "caldera-server"
+        end
+        subconfig.vm.provision "shell", path: "../../scripts/ubuntu/caldera.sh", name: "caldera.sh", privileged: false
+    end
+
+    # Linux client to access the Caldera web server
+    config.vm.define "linux_client" do |subconfig|
+        subconfig.vm.box = "vagrant-ubuntu-custom"
+        subconfig.vm.network :private_network, ip: "192.168.33.11"
+        subconfig.vm.provider :vmware_desktop do |client|
+            client.gui = true
+            client.vmx["memsize"] = "4096"
+            client.vmx["numvcpus"] = "1"
+            client.vmx["displayname"] = "client-ubuntu"
+        end
+        subconfig.vm.provision "shell", path: "../../scripts/ubuntu/chrome.sh", name: "chrome.sh", privileged: false
+    end
+
+    # Linux victim #1
+    config.vm.define "linux_victim_1" do |subconfig|
+        subconfig.vm.box = "bento/debian-9"
+        subconfig.vm.network :private_network, ip: "192.168.33.20"
+        subconfig.vm.provider :vmware_desktop do |client|
+            client.gui = true
+            client.vmx["memsize"] = "2048"
+            client.vmx["numvcpus"] = "1"
+            client.vmx["displayname"] = "linux-victim-1"
+        end
+        subconfig.vm.provision "shell", path: "../../scripts/debian/open-vm-tools.sh", name: "open-vm-tools.sh"
+        subconfig.vm.provision "shell", path: "../../scripts/debian/curl.sh", name: "curl.sh"
+    end
+
+    # Linux victim #1
+    config.vm.define "linux_victim_2" do |subconfig|
+        subconfig.vm.box = "bento/debian-9"
+        subconfig.vm.network :private_network, ip: "192.168.33.21"
+        subconfig.vm.provider :vmware_desktop do |client|
+            client.gui = true
+            client.vmx["memsize"] = "2048"
+            client.vmx["numvcpus"] = "1"
+            client.vmx["displayname"] = "linux-victim-2"
+        end
+        subconfig.vm.provision "shell", path: "../../scripts/debian/open-vm-tools.sh", name: "open-vm-tools.sh"
+        subconfig.vm.provision "shell", path: "../../scripts/debian/curl.sh", name: "curl.sh"
+    end
+end
 ```
+
+It may look intimidating, but there are only a few new componenets to the `Vagrantfile`:
+
+* You'll notice we nested blocks within each other by using `config.vm.define` - this is a bit different from before where we just dropped the machine directly into the `Vagrantfile`.
+* We added a line `subconfig.vm.network :private_network, ip:` into each VM - this is how you define host-only networks with VMWare and Vagrant. Don't worry if this doesn't match any of the networks in the Virtual Network Manager - Vagrant will automagically make a new one when needed. This also means that you can change the "ip" field to whatever you like - just make sure that `caldera.sh` has the same IP in the sed commands!
+
+Other than that, these really, *truly* are the same as before - we just threw a couple of them into the same Vagrantfile. Let's check out the new scripts that we introduced:
+
+`curl.sh:`
+```bash
+#!/bin/bash
+
+apt-get install -y curl
+```
+
+`caldera.sh:`
+```bash
+#!/bin/bash
+
+mkdir -p /home/vagrant/caldera_reports
+echo vagrant | sudo -S apt-get install -y python3-pip git
+git clone https://github.com/mitre/caldera.git --recursive --branch 2.7.0 /home/vagrant/caldera/
+python3 -m pip install -r /home/vagrant/caldera/requirements.txt
+sed -i 's/host: 0.0.0.0/host: 192.168.33.10/g' /home/vagrant/caldera/conf/default.yml
+sed -i 's/reports_dir: \/tmp/reports_dir: \/home\/vagrant\/caldera_reports/g' /home/vagrant/caldera/conf/default.yml
+sh -c "python3 /home/vagrant/caldera/server.py --insecure" &
+```
+
+So hopefully `curl.sh` is straightforward enough - but it's the `caldera.sh` script that is important. It's important to know that the majority of the file comes from the GitHub instructions, but there's a small change. Notice the lines that use `sed`? Those are changing up a few small details on the Caldera server - normally Caldera only listens on `127.0.0.1` and puts the reports in `/tmp`. Changing those lines allow us to have our client machines connect and put the reports in a more permanent and intentional location.
+
+So with all this said and done, how do we run our environment? In a way, that's kind of a loaded question - the answer depends on *which* part of the environment you'd like to activate. For example:
+* Activate all machines: `vagrant up`
+* Activate the Caldera server ONLY: `vagrant up caldera`
+* Activate the Linux client ONLY: `vagrant up linux_client`
+* Destroy all machines: `vagrant destroy -f`
+* Destroy only victim #1: `vagrant destroy -f linux_victim_1`
+* etc
+
+You probably see the pattern - in order to target a specific machine, you can look at our Vagrantfile for the line `config.vm.define` to find the name. Just strip the name out of that line, shove it into the particular Vagrant command you'd like to subject it to, and BAM! You have a target running only against the machine you've specified. Let's bring up our entire network with a `vagrant up`. Watch as Vagrant works its magic - once everything is finished up you can use the Ubuntu client, open Chrome, and browse to `http://192.168.60.
 
 ## >>RECAP
 
+Alright, so let's break it down into a nice TL;DR for you. Without further adieu, today's project:
+* We learned what Vagrant is and does.
+* We talked file structure and how I set up my environments directory tree.
+* We created our golden image and then used Packer to turn it into a base box.
+* We discussed Vagrant Cloud and how to use it.
+* We figured out how a Vagrantfile is structured.
+* We discovered how to bring up and down boxes with different Vagrant commands.
+* Finally, we chatted about how to bring up multi-machine environments.
+
 ## >>REFERENCES
 
-
+Vagrant: https://www.vagrantup.com/
+Vagrant Intro Docs: https://www.vagrantup.com/intro
+Vagrant Full Docs: https://www.vagrantup.com/docs
+Packer: https://www.packer.io/
+Packer Intro Docs: https://www.packer.io/intro
+Packer Guides: https://www.packer.io/guides
+Packer Full Docs: https://www.packer.io/docs
+MITRE Caldera: https://github.com/mitre/caldera
+Caldera config file: https://github.com/mitre/caldera/blob/master/conf/default.yml
+Creating Windows base boxes: https://huestones.co.uk/2015/08/creating-a-windows-10-base-box-for-vagrant-with-virtualbox/
