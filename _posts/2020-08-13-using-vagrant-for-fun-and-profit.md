@@ -113,7 +113,9 @@ So Vagrant cloud is essentially a repository for already-created boxes, both in 
 > Vagrant Cloud serves a public, searchable index of Vagrant boxes. It's easy to find boxes you can use with Vagrant that contain the technologies you need for a Vagrant environment.  
 You don't need a Vagrant Cloud account to use public boxes.
 
-![Vagrant cloud interface](../assets/images/vagrant-for-fun/vagrant-cloud.png)
+{% raw %}<img src="{{ site.url }}{{ site.baseurl }}/assets/images/vagrant-for-fun/vagrant-cloud.png>{% endraw %}
+
+![Vagrant cloud interface](/assets/images/vagrant-for-fun/vagrant-cloud.png)
 
 Basically, this service lets us browse boxes that other people have made and just use them - pretty fantastic! I know the more paranoid among you don't trust this - and for good reason, as you don't control the box that's being loaded - so that's why we have the do-it-ourself method. For those who don't mind using public boxes, instructions are straightforward from this point; click on the box that you're interested in and be greeted with the following screen:
 
