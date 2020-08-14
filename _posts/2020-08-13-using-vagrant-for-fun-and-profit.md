@@ -113,17 +113,15 @@ So Vagrant cloud is essentially a repository for already-created boxes, both in 
 > Vagrant Cloud serves a public, searchable index of Vagrant boxes. It's easy to find boxes you can use with Vagrant that contain the technologies you need for a Vagrant environment.  
 You don't need a Vagrant Cloud account to use public boxes.
 
-{% raw %}<img src="{{ site.url }}{{ site.baseurl }}/assets/images/vagrant-for-fun/vagrant-cloud.png>{% endraw %}
-
 ![Vagrant cloud interface](/assets/images/vagrant-for-fun/vagrant-cloud.png)
 
 Basically, this service lets us browse boxes that other people have made and just use them - pretty fantastic! I know the more paranoid among you don't trust this - and for good reason, as you don't control the box that's being loaded - so that's why we have the do-it-ourself method. For those who don't mind using public boxes, instructions are straightforward from this point; click on the box that you're interested in and be greeted with the following screen:
 
-![Vagrant box instructions](../assets/images/vagrant-for-fun/vagrant-cloud-instructions.png)
+![Vagrant box instructions](/assets/images/vagrant-for-fun/vagrant-cloud-instructions.png)
 
 That screen shows you what Vagrantfile you should use with the box. Navigate to `/vagrant/ubuntu_vc`. You can either copy and paste it into a Vagrantfile, or you can run `vagrant init hashicorp/trusty64`. Once you do that, you'll have a shiny new Vagrantfile in the current directory and can just type `vagrant up` - the box will automagically be created! Simple, short, and sweet - our favorite. We'll get to customizing the Vagrantfile in a few sections, so kick back for now.
 
-![vagrant init, super easy!](../assets/images/vagrant-for-fun/vagrant-init-hashicorp.png)
+![vagrant init, super easy!](/assets/images/vagrant-for-fun/vagrant-init-hashicorp.png)
 
 It's also worth noting that every time you add in a new box from Vagrant Cloud, your machine saves it locally on disk under `$HOME/.vagrant.d/` - so be careful if you have space limitations. Some VMs may not need *much* space, but they definitely add up!
 
@@ -269,7 +267,7 @@ I'm not going to go through and explain these individually, so if you don't unde
 
 Alright, so we've now *finally* made it to the end of the Packer section. Let's issue the final command to receive our shiny, newly-packaged box: `packer build --var-file='vars-vagrant-ubuntu-custom-vmx.json' vagrant-ubuntu-custom-vmx.json`. If all goes according to plan you should see the following below:
 
-![Packer knows what it's doing, unlike me most times](../assets/images/vagrant-for-fun/packer-build-success.png)
+![Packer knows what it's doing, unlike me most times](/assets/images/vagrant-for-fun/packer-build-success.png)
 
 Once we get through with that part, we have a tiny amount left - we have to actually add the box to Vagrant itself so that it knows where to find it. Navigate back to the `packer/boxes/` directory and look inside - you should see your box sitting there. To add it to Vagrant, do a `vagrant box add --name vagrant-ubuntu-custom .\vagrant-ubuntu-custom.box` and you're good to go!
 
@@ -323,7 +321,7 @@ end
 
 Now that we've done that we need to re-test our build. My personal preference is to do a `vagrant destroy -f` to completely remove the box, then just type `vagrant up` again. Not sure why I do that - it's probably the least efficient - but it puts my mind at ease. Now our terminal output should look a little different, showing the Comby install process happening:
 
-![Comby with special colors in the terminal!](../assets/images/vagrant-for-fun/comby-output.png)
+![Comby with special colors in the terminal!](/assets/images/vagrant-for-fun/comby-output.png)
 
 When all is said and done - you have a fully-functioning, extendable Ubuntu 20.04 image ready to rock with Comby installed. This is far from over, though.
 
@@ -359,7 +357,7 @@ environments/
 
 For the most part, it's identical. We've added a `caldera_network/` directory with its own `Vagrantfile`. Wait, whaaaaaa? One Vagrantfile? Yup, you read that right - multi-machine networks don't require separate Vagrantfiles for each machine. Speaking of machines, you're now able to create your own so go crazy - make whichever you please or add in ones from the Vagrant Cloud. I'll be using the following setup for machines:
 
-![Simple Caldera network map](../assets/images/vagrant-for-fun/caldera-network.png)
+![Simple Caldera network map](/assets/images/vagrant-for-fun/caldera-network.png)
 
 Since box choice doesn't matter, I'm going to run the server on `bento/ubuntu-20.04`, the client to access the web interface on our custom Ubuntu box we built, and both victims on `bento/ubuntu-20.04`. It'll be a bit of a doozy to set up this `Vagrantfile`, but let's get to it.
 
@@ -459,7 +457,7 @@ So with all this said and done, how do we run our environment? In a way, that's 
 
 You probably see the pattern - in order to target a specific machine, you can look at our Vagrantfile for the line `config.vm.define` to find the name. Just strip the name out of that line, shove it into the particular Vagrant command you'd like to subject it to, and BAM! You have a target running only against the machine you've specified. Let's bring up our entire network with a `vagrant up`. Watch as Vagrant works its magic - once everything is finished up you can use the Ubuntu client, open Chrome, and browse to `http://192.168.33.10:8888`. You should see the Caldera login screen:
 
-![Caldera never looked so good!](../assets/images/vagrant-for-fun/caldera-client-success.png)
+![Caldera never looked so good!](/assets/images/vagrant-for-fun/caldera-client-success.png)
 
 Congrats! You now have a small network on which you can do breach & attack simulations - and I'm sure you now have ideas for other small networks you could run via Vagrant.
 
