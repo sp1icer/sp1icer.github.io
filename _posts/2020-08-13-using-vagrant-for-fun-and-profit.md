@@ -12,13 +12,13 @@ tags:
   - automation
 ---
 
-## >>INTRO
+## >> INTRO
 
 Have you ever decided to nuke your penetration testing machine because it got too polluted? Maybe you needed multiple configurations for different clients or use cases (such as web app hacking, hardware hacking) that needed specialized tools? Or maybe you're the type of person who needs to quickly initialize a small test network that has a few clients, such as spinning up an instance of [a small Caldera network](https://github.com/mitre/caldera)? If any of these situations sound frustrating and tedious, it might be time to migrate your workflow over to include [Vagrant](https://www.vagrantup.com/)!
 
 **NOTE**: As you go throughout this tutorial, keep in mind that I'm self-taught - I'm by no means a DevOps expert nor do I know everything there is to know about Vagrant. I'm just a huge nerd that enjoys the Hashicorp ecosystem for automation!
 
-## >>WHAT IS VAGRANT?
+## >> WHAT IS VAGRANT?
 
 Vagrant is a piece of free-and-open-source software (FOSS) that I've been using for around 1.5 years now - and it's absolutely changed how I do things both at work and at home. I'll let Hashicorp explain it themselves:
 
@@ -26,11 +26,11 @@ Vagrant is a piece of free-and-open-source software (FOSS) that I've been using 
 
 So ultimately, what does this mean? If you've kept up with the DevOps world of the past few years this should all sound pretty familiar - Vagrant allows us to deploy and manage virtual machines in an automated fashion using Infrastructure-as-Code. Ultimately you end up writing a piece of code - the almighty `Vagrantfile` - and that is what Vagrant reads in to figure out its marching orders.
 
-## >>PENTESTING IN THE STONE AGES
+## >> PENTESTING IN THE STONE AGES
 
 Let's think back to how we would make virtual machines previously - let's assume it's a standard job for a client who has a web application, maybe you're doing some [bug bounty work like Stök](https://www.youtube.com/channel/UCQN2DsjnYH60SFBIA6IkNwg) and wanted a clean environment. You'd first go grab the ISO for the OS distro of your choice - for most people that would be either Kali or Parrot - and then you'd go into your hypervisor and create a new machine and *manually* walk through the install process. You'd finally be dropped in to a terminal or DE and start your customizations - performing things like `sudo apt-get update && sudo apt-get full-upgrade -y` and installing tools like [Comby](https://comby.dev/) and [pwndbg](https://github.com/pwndbg/pwndbg). Once you were finally finished you would snapshot the image or *maybe* you'd do something like linked clones in VMWare to make a pseudo-golden image that you could pass around on engagements. Overall it's not a terrible process - but is there a better way?
 
-## >>THE FUTURE IS NOW
+## >> THE FUTURE IS NOW
 
 Let's change up our process - Vagrant will shake up a little bit of the monotonous tasks and help us modularize our lives, just a little bit. Here's a typical minimal structure I use for my projects.
 
@@ -70,7 +70,7 @@ Cool, so we have an idea of how a project is structured and are excited about th
 
 It's worth noting that the VMWare version of Vagrant costs some money - don't let that deter you. They offer the Virtualbox plugin for free, and it works just the same. All code that I show should be relatively easy to port over to a Virtualbox-based setup. Now we'll start with making a simple box!
 
-## >>WHAT WE'LL BE BAKING TODAY
+## >> WHAT WE'LL BE BAKING TODAY
 
 Let's start with describing our ending directory structure state for this project:
 
@@ -100,7 +100,7 @@ environments/
 
 Essentially, this will end up being a simple Ubuntu box that has downloaded Comby and is ready to use it. The final setup will be hosted [on my GitHub](https://github.com/sp1icer/vagrant-for-fun-and-profit) for you to browse through, but I recommend following along and manually performing this. Also - as you do this, you should include a line in your `.gitignore` to not track any files in `boxes/*`. They're just generically not worth putting into GitHub (and also are a decent size)
 
-## >>MAKING A GOLDEN IMAGE (LIKE A CHEATER)
+## >> MAKING A GOLDEN IMAGE (LIKE A CHEATER)
 
 Now that we've got our project set up, we'll start making our gold image - as Vagrant would call it, a "base box". There are ~~two~~ three ways to do a base box - Vagrant cloud, creating our own, and using Packer to build one from the ground up via kickstart/preseed files. We'll skip that last one and cover the first two because they're *far* easier to get a grasp on.
 
@@ -148,7 +148,7 @@ After this whole process, we have a pretty decent setup for a gold image - I rec
   "builders": [
     {
       "type": "vmware-vmx",
-      "source_path": ">>ENTER THE FILE PATH TO YOUR ubuntu.vmx ON DISK HERE!!!",
+      "source_path": ">> ENTER THE FILE PATH TO YOUR ubuntu.vmx ON DISK HERE!!!",
       "ssh_username": "vagrant",
       "ssh_password": "vagrant",
       "ssh_timeout": "10000s",
@@ -241,7 +241,7 @@ echo 'vagrant ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/vagrant
 chmod 0440 /etc/sudoers.d/vagrant
 
 # SSH tweak
-echo 'UseDNS no' >> /etc/ssh/sshd_config
+echo 'UseDNS no' >>  /etc/ssh/sshd_config
 
 systemctl restart sshd
 ```
@@ -273,7 +273,7 @@ Once we get through with that part, we have a tiny amount left - we have to actu
 
 **Note**: This step may take a while. Feel free to go make a coffee, watch a TV show, play video games - I'm not your mom. If it's still running after a while, though, try hitting Ctrl+C - for whatever reason I've seen this complete builds that seem to be stuck.{: .notice--info}
 
-## >>LOOK MA, NO HANDS!
+## >> LOOK MA, NO HANDS!
 
 The good news - we're halfway there. The bad news? We're only halfway there. We still have quite a bit of Vagrant to cover, and I'm only scratching the surface. It's okay though - let's start really digging in and customizing our new box.
 
@@ -325,7 +325,7 @@ Now that we've done that we need to re-test our build. My personal preference is
 
 When all is said and done - you have a fully-functioning, extendable Ubuntu 20.04 image ready to rock with Comby installed. This is far from over, though.
 
-## >>FOR MY NEXT TRICK...
+## >> FOR MY NEXT TRICK...
 
 What, you thought we'd stop at *one* measly machine? Nope, try again - the next part of the tutorial is going to show how to run multi-machine setups with Vagrant. This section will teach a few nifty tricks by walking you through setting up Caldera hosts and a Linux client, as well as a victim. To start, we'll re-visit our directory structure:
 
@@ -461,7 +461,7 @@ You probably see the pattern - in order to target a specific machine, you can lo
 
 Congrats! You now have a small network on which you can do breach & attack simulations - and I'm sure you now have ideas for other small networks you could run via Vagrant.
 
-# >>F**K IT, WE'LL DO IT LIVE!
+# >> F**K IT, WE'LL DO IT LIVE!
 
 So now, the whole reason I started this article - to talk through my personal workflow. I'll take my most used VM (my home one, not work) and show it to you and explain how it works in context. Let's begin, shall we? First: the `Vagrantfile`.
 
@@ -562,7 +562,7 @@ Finally, the whole take-a-snapshot and linked clones thing just *wasn't* cutting
 
 Thus, my workflow was created. I now have a machine which I spin up when I'm ready to hack on HacktheBox, it has a mounted Git repository (via shared folders) to house any work I wish to keep from session-to-session on HTB, I attack to my heart's content, then when finished I trash the whole thing with `vagrant destroy -f`. It keeps things clean, it keeps them organized, and there's much less maintenance than before. Now instead of having gold images for exploit development, HacktheBox, bug bounty, and others to keep up with I just have the single one and port it across different `Vagrantfiles` - so instead of "gold image maintenance" Saturday mornings, I now have only the one to update.
 
-## >>RECAP
+## >> RECAP
 
 Alright, so let's break it down into a nice TL;DR for you. Without further adieu, today's project:
 
@@ -579,7 +579,7 @@ I really hope you enjoyed my article/dissertation/yelling into the abyss/sharing
 
 \- sp1icer
 
-## >>REFERENCES
+## >> REFERENCES
 
 Vagrant: [https://www.vagrantup.com/](https://www.vagrantup.com/)  
 Vagrant Intro Docs: [https://www.vagrantup.com/intro](https://www.vagrantup.com/intro)  
