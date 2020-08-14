@@ -400,7 +400,6 @@ Vagrant.configure("2") do |config|
             client.vmx["numvcpus"] = "1"
             client.vmx["displayname"] = "linux-victim-1"
         end
-        subconfig.vm.provision "shell", path: "../../scripts/debian/open-vm-tools.sh", name: "open-vm-tools.sh"
         subconfig.vm.provision "shell", path: "../../scripts/debian/curl.sh", name: "curl.sh"
     end
 
@@ -414,7 +413,6 @@ Vagrant.configure("2") do |config|
             client.vmx["numvcpus"] = "1"
             client.vmx["displayname"] = "linux-victim-2"
         end
-        subconfig.vm.provision "shell", path: "../../scripts/debian/open-vm-tools.sh", name: "open-vm-tools.sh"
         subconfig.vm.provision "shell", path: "../../scripts/debian/curl.sh", name: "curl.sh"
     end
 end
@@ -457,7 +455,96 @@ So with all this said and done, how do we run our environment? In a way, that's 
 * Destroy only victim #1: `vagrant destroy -f linux_victim_1`
 * etc
 
-You probably see the pattern - in order to target a specific machine, you can look at our Vagrantfile for the line `config.vm.define` to find the name. Just strip the name out of that line, shove it into the particular Vagrant command you'd like to subject it to, and BAM! You have a target running only against the machine you've specified. Let's bring up our entire network with a `vagrant up`. Watch as Vagrant works its magic - once everything is finished up you can use the Ubuntu client, open Chrome, and browse to `http://192.168.60.
+You probably see the pattern - in order to target a specific machine, you can look at our Vagrantfile for the line `config.vm.define` to find the name. Just strip the name out of that line, shove it into the particular Vagrant command you'd like to subject it to, and BAM! You have a target running only against the machine you've specified. Let's bring up our entire network with a `vagrant up`. Watch as Vagrant works its magic - once everything is finished up you can use the Ubuntu client, open Chrome, and browse to `http://192.168.33.10:8888`. You should see the Caldera login screen:
+
+![Caldera never looked so good!](../assets/images/vagrant-for-fun/caldera-client-success.png)
+
+# >>WE'LL DO IT LIVE!
+
+So now, the whole reason I started this article - to talk through my personal workflow. I'll take my most used VM (my home one, not work) and show it to you and explain how it works in context. Let's begin, shall we? First: the `Vagrantfile`.
+
+```ruby
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "attack-parrot"
+  config.vm.guest = "debian"
+  config.vm.synced_folder "../../../abcdef/", "/home/vagrant/abcdef"
+  config.ssh.username = "vagrant"
+
+  config.vm.provider "vmware_desktop" do |vm|
+    # Display the vmware GUI when booting the machine
+    vm.gui = true
+    # Customize the VM's settings:
+    vm.vmx["memsize"] = "8192"
+    vm.vmx["numvcpus"] = "1"
+    vm.vmx["displayname"] = "htb-parrot"
+  end
+
+  # Move files to the VM.
+  config.vm.provision "file", source: "../../extras/htb_etc_hosts.txt", destination: "/tmp/hosts"
+  config.vm.provision "file", source: "../../extras/etc_ssh_sshd_config.txt", destination: "/tmp/sshd_config"
+  config.vm.provision "file", source: "../../extras/tmux_conf.txt", destination: "/home/vagrant/.tmux.conf"
+  config.vm.provision "file", source: "../../extras/backgrounds/tanjirou.jpg", destination: "/home/vagrant/Pictures/"
+  config.vm.provision "file", source: "../../extras/pwnbox_bashrc.txt", destination: "/tmp/pwnbox_bashrc.txt"
+  config.vm.provision "file", source: "../../scripts/parrot/mount-shared-folders.sh", destination: "/tmp/mount-shared-folders"
+  config.vm.provision "file", source: "../../scripts/parrot/restart-vm-tools.sh", destination: "/tmp/restart-vm-tools"
+
+  # Shell scripts to run on the VM.
+  config.vm.provision "shell", path: "../../scripts/parrot/iptables.sh", name: "iptables.sh"
+  config.vm.provision "shell", path: "../../scripts/parrot/go.sh", name: "go.sh"
+  config.vm.provision "shell", path: "../../scripts/parrot/dirs.sh", name: "dirs.sh"
+  config.vm.provision "shell", path: "../../scripts/parrot/cutter.sh", name: "cutter.sh"
+  config.vm.provision "shell", path: "../../scripts/parrot/nmap.sh", name: "nmap.sh"
+  config.vm.provision "shell", path: "../../scripts/parrot/etc_hosts.sh", name: "etc_hosts.sh"
+  config.vm.provision "shell", path: "../../scripts/parrot/sshd_config.sh", name: "sshd_config.sh"
+  config.vm.provision "shell", path: "../../scripts/parrot/rockyou.sh", name: "rockyou.sh"
+  config.vm.provision "shell", path: "../../scripts/parrot/scripts.sh", name: "scripts.sh"
+  config.vm.provision "shell", path: "../../scripts/parrot/utils.sh", name: "utils.sh"
+  config.vm.provision "shell", path: "../../scripts/parrot/comby.sh", name: "comby.sh"
+  config.vm.provision "shell", path: "../../scripts/parrot/powershell.sh", name: "powershell.sh"
+  config.vm.provision "shell", path: "../../scripts/parrot/pwntools.sh", name: "pwntools.sh"
+  
+  config.vm.provision "shell", path: "../../scripts/parrot/export-path.sh", name: "export-path.sh"
+  config.vm.provision "shell", path: "../../scripts/parrot/alias.sh", name: "alias.sh", privileged: false
+  config.vm.provision "shell", path: "../../scripts/parrot/dos2unix.sh", name: "dos2unix.sh", privileged: false
+  config.vm.provision "shell", path: "../../scripts/parrot/rem-extra-dirs.sh", name: "rem-extra-dirs.sh", privileged: false
+  config.vm.provision "shell", path: "../../scripts/parrot/gobuster.sh", name: "gobuster.sh", privileged: false
+  config.vm.provision "shell", path: "../../scripts/parrot/background.sh", name: "background.sh", privileged: false
+  config.vm.provision "shell", path: "../../scripts/parrot/vpn.sh", name: "vpn.sh", privileged: false
+  config.vm.provision "shell", path: "../../scripts/parrot/impacket.sh", name: "impacket.sh", privileged: false
+  config.vm.provision "shell", path: "../../scripts/parrot/fonts.sh", name: "fonts.sh", privileged: false
+  config.vm.provision "shell", path: "../../scripts/parrot/jadx.sh", name: "jadx.sh", privileged: false
+  config.vm.provision "shell", path: "../../scripts/parrot/pwnbox.sh", name: "pwnbox.sh", privileged: false
+  config.vm.provision "shell", path: "../../scripts/parrot/unicorn.sh", name: "unicorn.sh", privileged: false
+  config.vm.provision "shell", path: "../../scripts/parrot/vm-tools-scripts.sh", name: "vm-tools-scripts.sh", privileged: false
+end
+```
+
+That's MUCH bigger than the examples we've had so far, so let's take it slow. Here are the script names and what they do:
+
+* `config.vm.provision "file"`: any of these lines drop a file from source -> destination. Pretty straightforward stuff.
+* `iptables.sh`: sets up custom IPTables rules for me.
+* `go.sh`: I use this script to set up my Golang environment for me.
+* `dirs.sh`: I remove extraneous directories as well as add in a few custom ones.
+* `cutter.sh`: This downloads and sets up the Cutter RE frontend for me, since I like it.
+* `nmap.sh`: Ever seen the instructions on how to run Nmap as an unprivileged user? This helps me automatically do so, sans the parts that go in my `~/.bashrc`.
+* `etc_hosts.sh`: This moves the custom `/etc/hosts` file I have written for HTB into /etc/hosts from /tmp.
+* `sshd_config.sh`: Overwrites the SSH daemon config for me, then restarts SSH.
+* `rockyou.sh`: Gunzips rockyou for me.
+* `scripts.sh`: Downloads a few enum scripts like LinPEAS and LinEnum from GitHub.
+* `utils.sh`: Grabs a few things off of `apt` for ease of use later.
+* `comby.sh`: *Please tell me you were paying attention earlier.*
+* `powershell.sh`: This gets Powershell ready for use. Note: Powershell is still pretty finicky on Linux hosts.
+* `pwntools.sh`: Installs Pwntools for me for easier Python fun on exploit dev and such.
+* `export-path.sh`: Sends a couple of environment variables to my `~/.bashrc` for use.
+* `alias.sh`: Similar to export-path.sh, this sends any aliases to my `~/.bashrc`
+* `dos2unix.sh`: This installs dos2unix and runs it against any config files I've uploaded, since going Windows -> Unix is funky sometimes.
+* `rem-extra-dirs.sh`: Cleans out extra directories in the user's home directory.
+* `gobuster.sh`: Execs a `go get` to grab Gobuster.
+* `background.sh`: Because I'm a weeb, changes it to an anime backround for me. Don't judge.
+* `vpn.sh`: 
 
 ## >>RECAP
 
@@ -469,6 +556,8 @@ Alright, so let's break it down into a nice TL;DR for you. Without further adieu
 * We figured out how a Vagrantfile is structured.
 * We discovered how to bring up and down boxes with different Vagrant commands.
 * Finally, we chatted about how to bring up multi-machine environments.
+
+## >>SHOUTOUTS
 
 ## >>REFERENCES
 
