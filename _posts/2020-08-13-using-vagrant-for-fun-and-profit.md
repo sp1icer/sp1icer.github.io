@@ -5,11 +5,11 @@ header:
   image: /assets/images/vagrant-for-fun/vagrant-banner.jpg
 categories:
   - infrastructure
-  - tutorial
 tags:
   - vagrant
   - packer
   - automation
+  - tutorial
 ---
 
 ## >> INTRO
