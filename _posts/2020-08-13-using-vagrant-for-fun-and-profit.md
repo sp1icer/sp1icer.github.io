@@ -14,9 +14,9 @@ tags:
 
 ## >>INTRO
 
-Have you ever decided to nuke your penetration testing machine because it got too polluted? Maybe you needed multiple configurations for different clients or use cases (such as web app hacking, hardware hacking) that needed specialized tools? Or maybe you're the type of person who needs to quickly initialize a small test network that has a few clients, such as spinning up an instance of [a small Caldera network](https://github.com/mitre/caldera)? If any of these situations sound familiar, it might be time to migrate your workflow over to include [Vagrant](https://www.vagrantup.com/)!
+Have you ever decided to nuke your penetration testing machine because it got too polluted? Maybe you needed multiple configurations for different clients or use cases (such as web app hacking, hardware hacking) that needed specialized tools? Or maybe you're the type of person who needs to quickly initialize a small test network that has a few clients, such as spinning up an instance of [a small Caldera network](https://github.com/mitre/caldera)? If any of these situations sound frustrating and tedious, it might be time to migrate your workflow over to include [Vagrant](https://www.vagrantup.com/)!
 
-As you go throughout this meager tutorial, keep in mind that I'm self-taught - I'm by no means a DevOps expert nor do I know everything there is to know about Vagrant. I'm just a huge nerd that enjoys the Hashicorp ecosystem for automation!
+**NOTE**: As you go throughout this tutorial, keep in mind that I'm self-taught - I'm by no means a DevOps expert nor do I know everything there is to know about Vagrant. I'm just a huge nerd that enjoys the Hashicorp ecosystem for automation!{: .notice--info}
 
 ## >>WHAT IS VAGRANT?
 
@@ -294,7 +294,7 @@ Vagrant.configure("2") do |config|
 end
 ```
 
-Go ahead and execute a `vagrant up` from this directory. You should see Vagrant start performing its magic by opening VMWare, then a virtual machine is created and added to your machines list. It then boots it and...that's it. That's because we haven't told Vagrant to provision anything but the VM yet, so let's go ahead and add a script called comby.sh to the `scripts/` directory.
+Go ahead and execute a `vagrant up` from this directory. You should see Vagrant start performing its magic by opening VMWare, then a virtual machine is created and added to your machines list. It then boots it and...that's it. That's because we haven't told Vagrant to provision anything but the VM yet, so let's go ahead and add a script called `comby.sh` to the `scripts/` directory.
 
 ```bash
 #!/bin/bash
@@ -459,7 +459,9 @@ You probably see the pattern - in order to target a specific machine, you can lo
 
 ![Caldera never looked so good!](../assets/images/vagrant-for-fun/caldera-client-success.png)
 
-# >>WE'LL DO IT LIVE!
+Congrats! You now have a small network on which you can do breach & attack simulations - and I'm sure you now have ideas for other small networks you could run via Vagrant.
+
+# >>F**K IT, WE'LL DO IT LIVE!
 
 So now, the whole reason I started this article - to talk through my personal workflow. I'll take my most used VM (my home one, not work) and show it to you and explain how it works in context. Let's begin, shall we? First: the `Vagrantfile`.
 
@@ -470,7 +472,7 @@ So now, the whole reason I started this article - to talk through my personal wo
 Vagrant.configure("2") do |config|
   config.vm.box = "attack-parrot"
   config.vm.guest = "debian"
-  config.vm.synced_folder "../../../abcdef/", "/home/vagrant/abcdef"
+  config.vm.synced_folder "../../../hackingthebox/", "/home/vagrant/hackingthebox"
   config.ssh.username = "vagrant"
 
   config.vm.provider "vmware_desktop" do |vm|
@@ -511,7 +513,6 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", path: "../../scripts/parrot/dos2unix.sh", name: "dos2unix.sh", privileged: false
   config.vm.provision "shell", path: "../../scripts/parrot/rem-extra-dirs.sh", name: "rem-extra-dirs.sh", privileged: false
   config.vm.provision "shell", path: "../../scripts/parrot/gobuster.sh", name: "gobuster.sh", privileged: false
-  config.vm.provision "shell", path: "../../scripts/parrot/background.sh", name: "background.sh", privileged: false
   config.vm.provision "shell", path: "../../scripts/parrot/vpn.sh", name: "vpn.sh", privileged: false
   config.vm.provision "shell", path: "../../scripts/parrot/impacket.sh", name: "impacket.sh", privileged: false
   config.vm.provision "shell", path: "../../scripts/parrot/fonts.sh", name: "fonts.sh", privileged: false
@@ -539,16 +540,32 @@ That's MUCH bigger than the examples we've had so far, so let's take it slow. He
 * `powershell.sh`: This gets Powershell ready for use. Note: Powershell is still pretty finicky on Linux hosts.
 * `pwntools.sh`: Installs Pwntools for me for easier Python fun on exploit dev and such.
 * `export-path.sh`: Sends a couple of environment variables to my `~/.bashrc` for use.
-* `alias.sh`: Similar to export-path.sh, this sends any aliases to my `~/.bashrc`
+* `alias.sh`: Similar to `export-path.sh`, this sends any aliases to my `~/.bashrc`
 * `dos2unix.sh`: This installs dos2unix and runs it against any config files I've uploaded, since going Windows -> Unix is funky sometimes.
 * `rem-extra-dirs.sh`: Cleans out extra directories in the user's home directory.
 * `gobuster.sh`: Execs a `go get` to grab Gobuster.
-* `background.sh`: Because I'm a weeb, changes it to an anime backround for me. Don't judge.
-* `vpn.sh`: 
+* `vpn.sh`: Makes a directory for my HTB `.ovpn` files.
+* `impacket.sh`: Snags a copy of impacket from their GitHub and gets it ready to go.
+* `fonts.sh`: I'm a fan of MesloLGS for terminal stuff.
+* `jadx.sh`: Installs JADX for Android reversing.
+* `pwnbox.sh`: Sets up my Parrot to look like the HTB Pwnbox.
+* `unicorn.sh`: Grabs TrustedSec's Unicorn payload generator off GitHub.
+* `vm-tools-scripts.sh`: Puts a few scripts on the box in case VMWare Tools go sideways on me.
+
+Neat. So now that we understand all the scripting, let's understand the flow of how I set this up. In order to do so, we need to understand my motivations for doing so.
+
+> I need to standardize boxes across machines - I ran into cases where I had an exploit on my desktop, but not laptop, and vice versa.  
+I need to automate things - doing this manually is tiresome.  
+I need something that was deterministic - that is, given the same inputs it would produce the same outputs.  
+I need speed - while it's probably not the fastest it could be, it's better than doing it by hand.  
+Finally, the whole take-a-snapshot and linked clones thing just *wasn't* cutting it for me.  
+
+Thus, my workflow was created. I now have a machine which I spin up when I'm ready to hack on HacktheBox, it has a mounted Git repository (via shared folders) to house any work I wish to keep from session-to-session on HTB, I attack to my heart's content, then when finished I trash the whole thing with `vagrant destroy -f`. It keeps things clean, it keeps them organized, and there's much less maintenance than before. Now instead of having gold images for exploit development, HacktheBox, bug bounty, and others to keep up with I just have the single one and port it across different `Vagrantfiles` - so instead of "gold image maintenance" Saturday mornings, I now have only the one to update.
 
 ## >>RECAP
 
 Alright, so let's break it down into a nice TL;DR for you. Without further adieu, today's project:
+
 * We learned what Vagrant is and does.
 * We talked file structure and how I set up my environments directory tree.
 * We created our golden image and then used Packer to turn it into a base box.
@@ -556,18 +573,21 @@ Alright, so let's break it down into a nice TL;DR for you. Without further adieu
 * We figured out how a Vagrantfile is structured.
 * We discovered how to bring up and down boxes with different Vagrant commands.
 * Finally, we chatted about how to bring up multi-machine environments.
+* As a bonus, I divulged my personalized workflow for HacktheBox.
 
-## >>SHOUTOUTS
+I really hope you enjoyed my article/dissertation/yelling into the abyss/sharing of knowledge. If you did enjoy the article, feel free share it on whatever you want - spread that knowledge around!
+
+\- sp1icer
 
 ## >>REFERENCES
 
-Vagrant: https://www.vagrantup.com/
-Vagrant Intro Docs: https://www.vagrantup.com/intro
-Vagrant Full Docs: https://www.vagrantup.com/docs
-Packer: https://www.packer.io/
-Packer Intro Docs: https://www.packer.io/intro
-Packer Guides: https://www.packer.io/guides
-Packer Full Docs: https://www.packer.io/docs
-MITRE Caldera: https://github.com/mitre/caldera
-Caldera config file: https://github.com/mitre/caldera/blob/master/conf/default.yml
-Creating Windows base boxes: https://huestones.co.uk/2015/08/creating-a-windows-10-base-box-for-vagrant-with-virtualbox/
+Vagrant: https://www.vagrantup.com/  
+Vagrant Intro Docs: https://www.vagrantup.com/intro  
+Vagrant Full Docs: https://www.vagrantup.com/docs  
+Packer: https://www.packer.io/  
+Packer Intro Docs: https://www.packer.io/intro  
+Packer Guides: https://www.packer.io/guides  
+Packer Full Docs: https://www.packer.io/docs  
+MITRE Caldera: https://github.com/mitre/caldera  
+Caldera config file: https://github.com/mitre/caldera/blob/master/conf/default.yml  
+Creating Windows base boxes: https://huestones.co.uk/2015/08/creating-a-windows-10-base-box-for-vagrant-with-virtualbox/  
