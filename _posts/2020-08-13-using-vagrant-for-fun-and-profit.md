@@ -104,7 +104,7 @@ Essentially, this will end up being a simple Ubuntu box that has downloaded Comb
 
 Now that we've got our project set up, we'll start making our gold image - as Vagrant would call it, a "base box". There are ~~two~~ three ways to do a base box - Vagrant cloud, creating our own, and using Packer to build one from the ground up via kickstart/preseed files. We'll skip that last one and cover the first two because they're *far* easier to get a grasp on.
 
-### $IT'S NOT A COMPUTER, IT'S THE CLOUD!
+### $IT'S NOT A COMPUTER, IT'S IN THE CLOUD!
 
 **NOTE**: This method is going to produce different results from doing it DIY - you won't have a desktop environment, for example. This method will pull down a build of Ubuntu server. Just keep that in mind as you go forth using Vagrant Cloud.
 
