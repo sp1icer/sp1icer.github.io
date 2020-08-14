@@ -16,7 +16,7 @@ tags:
 
 Have you ever decided to nuke your penetration testing machine because it got too polluted? Maybe you needed multiple configurations for different clients or use cases (such as web app hacking, hardware hacking) that needed specialized tools? Or maybe you're the type of person who needs to quickly initialize a small test network that has a few clients, such as spinning up an instance of [a small Caldera network](https://github.com/mitre/caldera)? If any of these situations sound frustrating and tedious, it might be time to migrate your workflow over to include [Vagrant](https://www.vagrantup.com/)!
 
-**NOTE**: As you go throughout this tutorial, keep in mind that I'm self-taught - I'm by no means a DevOps expert nor do I know everything there is to know about Vagrant. I'm just a huge nerd that enjoys the Hashicorp ecosystem for automation!{: .notice--info}
+**NOTE**: As you go throughout this tutorial, keep in mind that I'm self-taught - I'm by no means a DevOps expert nor do I know everything there is to know about Vagrant. I'm just a huge nerd that enjoys the Hashicorp ecosystem for automation!
 
 ## >>WHAT IS VAGRANT?
 
@@ -106,7 +106,7 @@ Now that we've got our project set up, we'll start making our gold image - as Va
 
 ### $IT'S NOT A COMPUTER, IT'S THE CLOUD!
 
-**NOTE**: This method is going to produce different results from doing it DIY - you won't have a desktop environment, for example. This method will pull down a build of Ubuntu server. Just keep that in mind as you go forth using Vagrant Cloud.{: .notice--warning}
+**NOTE**: This method is going to produce different results from doing it DIY - you won't have a desktop environment, for example. This method will pull down a build of Ubuntu server. Just keep that in mind as you go forth using Vagrant Cloud.
 
 So Vagrant cloud is essentially a repository for already-created boxes, both in public and private (for money). I'll once again defer to Hashicorp for the better definition:
 
@@ -191,7 +191,7 @@ After this whole process, we have a pretty decent setup for a gold image - I rec
 }
 ```
 
-**NOTE**: For all the Windows users out there - when you do the file path to your `.vmx` file, DON'T follow the Windows standard of using backslashes. Use forward slashes like you would on Unix hosts.{: .notice--warning}
+**NOTE**: For all the Windows users out there - when you do the file path to your `.vmx` file, DON'T follow the Windows standard of using backslashes. Use forward slashes like you would on Unix hosts.
 
 It also has a corresponding vars file. Name this one `vars-vagrant-ubuntu-custom-vmx.json`.
 
