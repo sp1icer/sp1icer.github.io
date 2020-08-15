@@ -1,6 +1,7 @@
 ---
 title: "Traceback"
 date: 2020-08-11
+classes: wide
 header:
   image: /assets/images/traceback/box_info.png
 categories:
