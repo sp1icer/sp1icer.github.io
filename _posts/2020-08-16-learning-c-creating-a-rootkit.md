@@ -35,6 +35,8 @@ The cornerstone of a successful project is defining what success looks like for 
 * Hides directories/files from multiple API calls
 * Hides processes from API calls
 * Hides network information from tools such as ss, netstat, etc.
+* Network propogation
+* Keylogging
 
 Creating these lists also help us with two fringe benefits - they help project management, as well as help fighting off scope creep.
 
@@ -48,6 +50,9 @@ Ah yes - everybody's *least* favorite section. Nobody likes being told that they
 
 So this section requires some knowledge of Vagrant and how virtual machines work - [go read my post on my Vagrant workflow if you haven't](https://sp1icer.dev/infrastructure/using-vagrant-for-fun-and-profit/) - and then come back here because you're going to need to know how to do multi-machine configurations to understand this next part.
 
+### $PHASE 1: SINGLE MACHINE
+
+### $PHASE 2: FULL NETWORK
 Anyone who knows me in real life probably knows one thing about me - I'm a perfectionist. That drive to be perfect *also* extends to my simulations, as it were; I can't leave any stone un-turned. In this case, I decided to model a small architecture that had 2 parts to it - an "attacker" network and a "public" network. This allowed me to set up my command-and-control in the rootkit in a somewhat accurate fashion.
 
 ## >> COURSE REVIEW
