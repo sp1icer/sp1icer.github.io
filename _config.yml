@@ -69,8 +69,7 @@ plugins:
 author:
   name      : "Justin"
   avatar    : "/assets/images/me_japan.jpg"
-  bio       : "infosec noob, learning exploit dev. eternal shoshin, striving to not be awful at hacking stuff. neurodiverse boi // eJPT, OSCP"
-  location  : "Texas, Texas"
+  bio       : "infosec noob, learning exploit dev. eternal shoshin, striving to not be awful at hacking stuff. neurodiverse // eJPT, OSCP"
   links:
     - label: "Twitter"
       icon: "fab fa-fw fa-twitter-square"
@@ -78,9 +77,6 @@ author:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/sp1icer"
-    - label: "Instagram"
-      icon: "fab fa-fw fa-instagram"
-      url: "https://instagram.com/sp1icersec"
 
 defaults:
   # _posts
