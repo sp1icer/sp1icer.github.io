@@ -69,7 +69,7 @@ plugins:
 author:
   name      : "Justin"
   avatar    : "/assets/images/me_japan.jpg"
-  bio       : "infosec noob, learning exploit dev. eternal shoshin, striving to not be awful at hacking stuff. neurodiverse // eJPT, OSCP"
+  bio       : "infosec noob, learning exploit dev. eternal shoshin, striving to not be awful at hacking stuff. pentester and add #blessed // eJPT, OSCP"
   links:
     - label: "Twitter"
       icon: "fab fa-fw fa-twitter-square"
