@@ -18,6 +18,7 @@ Have you ever decided to nuke your penetration testing machine because it got to
 
 <!--more-->
 **NOTE**: As you go throughout this tutorial, keep in mind that I'm self-taught - I'm by no means a DevOps expert nor do I know everything there is to know about Vagrant. I'm just a huge nerd that enjoys the Hashicorp ecosystem for automation!
+{: .notice--info}
 
 ## >> WHAT IS VAGRANT?
 
