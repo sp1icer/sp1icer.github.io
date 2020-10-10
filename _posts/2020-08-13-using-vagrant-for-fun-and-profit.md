@@ -4,12 +4,12 @@ date: 2020-08-11
 classes: wide
 excerpt_separator: <!--more-->
 categories:
-  - infrastructure
+  - tutorials
 tags:
   - vagrant
   - packer
   - automation
-  - tutorial
+  - virtual machines
 ---
 
 ## >> INTRO
@@ -17,7 +17,7 @@ tags:
 Have you ever decided to nuke your penetration testing machine because it got too polluted? Maybe you needed multiple configurations for different clients or use cases (such as web app hacking, hardware hacking) that needed specialized tools? Or maybe you're the type of person who needs to quickly initialize a small test network that has a few clients, such as spinning up an instance of [a small Caldera network?](https://github.com/mitre/caldera) If any of these situations sound frustrating and tedious, it might be time to migrate your workflow over to include [Vagrant!](https://www.vagrantup.com/)
 
 <!--more-->
-**NOTE**: As you go throughout this tutorial, keep in mind that I'm self-taught - I'm by no means a DevOps expert nor do I know everything there is to know about Vagrant. I'm just a huge nerd that enjoys the Hashicorp ecosystem for automation!
+As you go throughout this tutorial, keep in mind that I'm self-taught - I'm by no means a DevOps expert nor do I know everything there is to know about Vagrant. I'm just a huge nerd that enjoys the Hashicorp ecosystem for automation!
 {: .notice--info}
 
 ## >> WHAT IS VAGRANT?
@@ -106,9 +106,10 @@ Essentially, this will end up being a simple Ubuntu box that has downloaded Comb
 
 Now that we've got our project set up, we'll start making our gold image - as Vagrant would call it, a "base box". There are ~~two~~ three ways to do a base box - Vagrant cloud, creating our own, and using Packer to build one from the ground up via kickstart/preseed files. We'll skip that last one and cover the first two because they're *far* easier to get a grasp on.
 
-### $IT'S NOT A COMPUTER, IT'S IN THE CLOUD!
+### $ IT'S NOT A COMPUTER, IT'S IN THE CLOUD!
 
-**NOTE**: This method is going to produce different results from doing it DIY - you won't have a desktop environment, for example. This method will pull down a build of Ubuntu server. Just keep that in mind as you go forth using Vagrant Cloud.
+This method is going to produce different results from doing it DIY - you won't have a desktop environment, for example. This method will pull down a build of Ubuntu server. Just keep that in mind as you go forth using Vagrant Cloud.
+{: .notice}
 
 So Vagrant cloud is essentially a repository for already-created boxes, both in public and private (for money). I'll once again defer to Hashicorp for the better definition:
 
@@ -127,7 +128,7 @@ That screen shows you what Vagrantfile you should use with the box. Navigate to 
 
 It's also worth noting that every time you add in a new box from Vagrant Cloud, your machine saves it locally on disk under `$HOME/.vagrant.d/` - so be careful if you have space limitations. Some VMs may not need *much* space, but they definitely add up!
 
-### $A BOX MADE FOR OUR OWN SPECIAL IMAGE
+### $ A BOX MADE FOR OUR OWN SPECIAL IMAGE
 
 If you don't trust the Vagrant cloud images, there is an alternative - creating a box by hand. The bad news it's a tedious process, just like the stone ages - the good news is we only have to do the whole thing once. Let's start with a Ubuntu image, since that's what I showed in the Vagrant cloud section.
 
@@ -141,7 +142,7 @@ If you don't trust the Vagrant cloud images, there is an alternative - creating 
 8. `sudo service ssh restart`
 9.  Finally, shut the box down.
 
-### $ARTISINAL JSON FILES
+### $ ARTISINAL JSON FILES
 
 After this whole process, we have a pretty decent setup for a gold image - I recommend not adding more customization than necessary at this point. Here's where we finally use Packer - it will bundle up the box for us and make it ready to use in Vagrant. To do this, navigate to the `packer/` directory and either make/navigate into the `ubuntu_custom` folder there. We'll need a file to tell Packer what to do and how to handle the data - for this, we use the [Packer vmware-vmx provider.](https://www.packer.io/docs/builders/vmware-vmx.html) This file is going to be a JSON file that holds all changes to make to the base image before packaging it for Vagrant consumption. Name this one something like `vagrant-ubuntu-custom-vmx.json`.
 
@@ -193,7 +194,8 @@ After this whole process, we have a pretty decent setup for a gold image - I rec
 }
 ```
 
-**NOTE**: For all the Windows users out there - when you do the file path to your `.vmx` file, DON'T follow the Windows standard of using backslashes. Use forward slashes like you would on Unix hosts.
+For all the Windows users out there - when you do the file path to your `.vmx` file, DON'T follow the Windows standard of using backslashes. Use forward slashes like you would on Unix hosts.
+{: .notice--info}
 
 It also has a corresponding vars file. Name this one `vars-vagrant-ubuntu-custom-vmx.json`.
 
@@ -207,7 +209,7 @@ It also has a corresponding vars file. Name this one `vars-vagrant-ubuntu-custom
 
 Looking back in the `vagrant-ubuntu-custom-vmx.json`, you'll see the line `"output": "../boxes/{{ user 'vm_name' }}.box"`. Anywhere you see the double braces, Packer automatically pulls from the defined variables file. You'll specify this when building by means of a command-line switch called `--var-file`. 
 
-### $TIME TO BE A SCRIPT KIDDIE
+### $ TIME TO BE A SCRIPT KIDDIE
 
 The keen-eyed among you have noticed that there are references to scripts in the `scripts/` folder. We've now got to make them. Thankfully, they're extremely short and are standard if you've done quite a bit of Linux admin stuff. In order seen above:
 
@@ -265,7 +267,7 @@ apt-get install python3 python3-pip -y
 
 I'm not going to go through and explain these individually, so if you don't understand it's time to practice some Google-fu. One important thing to note, however, is the usage of `expect_disconnect` and `valid_exit_codes` in `vagrant-ubuntu-custom-vmx.json` - these prevent Vagrant from losing connection when services restart and return exit codes different than normal. The exit codes **specifically** are useful with updating, as bash returning that there's nothing to update would make Packer exit thinking something went wrong.
 
-### $PACK IT UP AND GO HOME
+### $ PACK IT UP AND GO HOME
 
 Alright, so we've now *finally* made it to the end of the Packer section. Let's issue the final command to receive our shiny, newly-packaged box: `packer build --var-file='vars-vagrant-ubuntu-custom-vmx.json' vagrant-ubuntu-custom-vmx.json`. If all goes according to plan you should see the following below:
 
@@ -273,7 +275,8 @@ Alright, so we've now *finally* made it to the end of the Packer section. Let's 
 
 Once we get through with that part, we have a tiny amount left - we have to actually add the box to Vagrant itself so that it knows where to find it. Navigate back to the `packer/boxes/` directory and look inside - you should see your box sitting there. To add it to Vagrant, do a `vagrant box add --name vagrant-ubuntu-custom .\vagrant-ubuntu-custom.box` and you're good to go!
 
-**Note**: This step may take a while. Feel free to go make a coffee, watch a TV show, play video games - I'm not your mom. If it's still running after a while, though, try hitting Ctrl+C - for whatever reason I've seen this complete builds that seem to be stuck.{: .notice--info}
+This step may take a while. Feel free to go make a coffee, watch a TV show, play video games - I'm not your mom. If it's still running after a long while, though, try hitting Ctrl+C - for whatever reason I've seen this complete builds that seem to be stuck.
+{: .notice--info}
 
 ## >> LOOK MA, NO HANDS!
 

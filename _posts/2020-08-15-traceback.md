@@ -2,8 +2,7 @@
 title: "Traceback"
 date: 2020-08-11
 classes: wide
-header:
-  image: /assets/images/traceback/box_info.png
+excerpt_separator: <!--more-->
 categories:
   - writeups
 tags:
@@ -13,13 +12,15 @@ tags:
   - scripting
 ---
 
-## >>INTRO
+## >> INTRO
 Traceback was quite the fun box, beginning with a site that appears to have been comrpomised by a "Xh4H" and defaced as such. Enumeration is key on this machine, as the foothold is almost entirely made up of details that you notice rather than CVEs or logical exploits; from there, privilege escalation is conducted via an in-built Linux tool that previously, I didn't know had a privilege escalation vulnerability (thanks Xh4H for showing me via this privesc!). Let's begin!
 
 >Creator: [Xh4H](https://app.hackthebox.eu/users/21439)  
 Rating: 4.0 stars
 
-## >>INITIAL ACCESS
+<!--more-->
+
+## >> INITIAL ACCESS
 As with every box on HTB, I start by adding it to my `/etc/hosts/` config for ease-of-use (normally I wouldn't do this on a test for multiple reasons). Really, it's just convenience at this point, I promise - the only other benefit that could be there is if the box has virtual host routing, it will *maybe* point to a different site. To do this, add the following entry to your hosts file:
 ```
 10.10.10.181  traceback.htb
@@ -74,7 +75,7 @@ Logging in with the found credentials grants access to a web UI that sits on top
 
 ![Reverse shell connection](/assets/images/traceback/revshell_connect.png)
 
-## >>GETTING PROMOTED - WEBADMIN TO SYSADMIN
+## >> GETTING PROMOTED - WEBADMIN TO SYSADMIN
 
 Okay, we're on the server now with a shell. Starting by enumerating who we are and what we can do leads to the following information:
 * We are the user "webadmin"
@@ -117,7 +118,7 @@ It seems that this is a note from sysadmin to us, letting us know that they've e
 
 As with python, Lua allows for native execution - Google shows us that the command to do so is `os.execute()`. To make life easy, I just crammed [pentestmonkey's reverse python shell](http://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet) into `os.execute()` with my HTB IP address and port changed within it. This nets us a shell as `sysadmin`; to persist (and have a more stable shell!), I added a newly-generated SSH key to `/home/sysadmin/.ssh/authorized_keys` and then SSH'd into the box.
 
-## >>BECOMING THE (SERVER) BOSS - SYSADMIN TO ROOT
+## >> BECOMING THE (SERVER) BOSS - SYSADMIN TO ROOT
 
 To recap what we've accomplished thus far, we've:
 
@@ -144,7 +145,7 @@ Now all that's left to do is log in as root with our new root key by doing `ssh 
 
 From here, do whatever you please - you're root after all!
 
-## >>RECAP/LESSONS LEARNED
+## >> RECAP/LESSONS LEARNED
 
 Well friends, we're at the end of our `traceback.htb` journey - hopefully you learned quite a bit! Today we covered the following:
 * Web enumeration/OSINT (discovering the webshell repo)
@@ -156,7 +157,7 @@ Personally, I really enjoyed the box - thanks to Xh4H for creating it. Remember 
 
 \- sp1icer
 
-## >>REFERENCES
+## >> REFERENCES
 
-Using nc for file transfers: https://nakkaya.com/2009/04/15/using-netcat-for-file-transfers/  
-Lua os.execute(): https://www.lua.org/pil/22.2.html  
+Using nc for file transfers: [https://nakkaya.com/2009/04/15/using-netcat-for-file-transfers/](https://nakkaya.com/2009/04/15/using-netcat-for-file-transfers/)  
+Lua os.execute(): [https://nakkaya.com/2009/04/15/using-netcat-for-file-transfers/](https://www.lua.org/pil/22.2.html)  
