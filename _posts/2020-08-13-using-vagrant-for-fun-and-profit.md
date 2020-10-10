@@ -197,7 +197,7 @@ After this whole process, we have a pretty decent setup for a gold image - I rec
 
 It also has a corresponding vars file. Name this one `vars-vagrant-ubuntu-custom-vmx.json`.
 
-```JSON
+```json
 {
     "vm_name": "vagrant-ubuntu-custom",
     "box_name" : "vagrant-ubuntu-custom", 
