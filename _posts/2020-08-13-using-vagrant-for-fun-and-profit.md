@@ -145,7 +145,7 @@ If you don't trust the Vagrant cloud images, there is an alternative - creating 
 
 After this whole process, we have a pretty decent setup for a gold image - I recommend not adding more customization than necessary at this point. Here's where we finally use Packer - it will bundle up the box for us and make it ready to use in Vagrant. To do this, navigate to the `packer/` directory and either make/navigate into the `ubuntu_custom` folder there. We'll need a file to tell Packer what to do and how to handle the data - for this, we use the [Packer vmware-vmx provider.](https://www.packer.io/docs/builders/vmware-vmx.html) This file is going to be a JSON file that holds all changes to make to the base image before packaging it for Vagrant consumption. Name this one something like `vagrant-ubuntu-custom-vmx.json`.
 
-```JSON
+```bash
 {
   "builders": [
     {
@@ -197,7 +197,7 @@ After this whole process, we have a pretty decent setup for a gold image - I rec
 
 It also has a corresponding vars file. Name this one `vars-vagrant-ubuntu-custom-vmx.json`.
 
-```json
+```bash
 {
     "vm_name": "vagrant-ubuntu-custom",
     "box_name" : "vagrant-ubuntu-custom", 
