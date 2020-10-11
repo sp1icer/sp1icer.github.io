@@ -19,9 +19,10 @@ $masthead-link-color: $text-color;
 $masthead-link-color-hover: $primary-color;
 $navicon-link-color-hover: mix(#000, $background-color, 30%) !default;
 
-h1, h2 {
-    color: #f96d00;
+.page__content h2 {
+    color: $primary-color;
 }
+
 .author__urls.social-icons .svg-inline--fa,
 .page__footer-follow .social-icons .svg-inline--fa {
   color: inherit;
