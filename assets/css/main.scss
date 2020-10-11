@@ -8,8 +8,8 @@ $background-color: #171717;
 $text-color: #f2f2f2;
 $primary-color: #f96d00;
 $border-color: mix(#fff, $background-color, 20%) !default;
-$code-background-color: mix(#000, $background-color, 15%) !default;
-$code-background-color-dark: mix(#000, $background-color, 20%) !default;
+$code-background-color: mix(#000, $background-color, 25%) !default;
+$code-background-color-dark: mix(#000, $background-color, 30%) !default;
 $form-background-color: mix(#000, $background-color, 15%) !default;
 $footer-background-color: mix(#000, $background-color, 30%) !default;
 $link-color: $primary-color;
@@ -20,6 +20,10 @@ $masthead-link-color-hover: $primary-color;
 $navicon-link-color-hover: mix(#000, $background-color, 30%) !default;
 
 .page-title {
+    color: $primary-color;
+}
+
+.site-title {
     color: $primary-color;
 }
 
