@@ -4,7 +4,7 @@
 
 @charset "utf-8";
 
-$background-color: #222831 !default;
+$background-color: #171717 !default;
 $text-color: #f2f2f2 !default;
 $primary-color: #f96d00 !default;
 $border-color: mix(#fff, $background-color, 20%) !default;
@@ -28,6 +28,5 @@ $navicon-link-color-hover: mix(#000, $background-color, 30%) !default;
   background-color: $form-background-color;
 }
 
-@import "minimal-mistakes/skins/sp1icer";
 @import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}"; // skin
 @import "minimal-mistakes"; // main partials
