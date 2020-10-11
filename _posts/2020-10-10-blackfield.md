@@ -177,11 +177,11 @@ And with that...
 
 Our work doesn't stop here, though - we only *just* got user access to the server! At this point I started doing my usual enumeration and hit something neat almost immediately. When I ran `whoami /all`, the following popped up in the privilege section:
 
-![Oh my!](../assets/images/blackfield/whoami-privs-interesting.png)
+![Oh my!](/assets/images/blackfield/whoami-privs-interesting.png)
 
 So those two privileges aren't something I had dealt with before - I've seen other ones like `SeImpersonatePrivilege` used in other exploits before but not these two. Googling just `SeBackupPrivilege exploit` shows us that there's no shortage of information on the topic (screencap is shortened - there's more after that):
 
-![Woah, that's a lotta damage!](../assets/images/blackfield/sebackup-google.png)
+![Woah, that's a lotta damage!](/assets/images/blackfield/sebackup-google.png)
 
 In order to learn about the exploit, I personally enjoyed reading through [this whitepaper by Andrea Pierini](https://hackinparis.com/data/slides/2019/talks/HIP2019-Andrea_Pierini-Whoami_Priv_Show_Me_Your_Privileges_And_I_Will_Lead_You_To_System.pdf) and [this article by FoxGlove security](https://foxglovesecurity.com/2017/08/25/abusing-token-privileges-for-windows-local-privilege-escalation/). Either of these articles do a phenomenal job of explaining it in *waaaaaay* more detail than I can right now, but here's the TL;DR as I understand it.
 
