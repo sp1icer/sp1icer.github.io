@@ -13,7 +13,7 @@ tags:
 ---
 
 ## >> INTRO
-Traceback was quite the fun box, beginning with a site that appears to have been comrpomised by a "Xh4H" and defaced as such. Enumeration is key on this machine, as the foothold is almost entirely made up of details that you notice rather than CVEs or logical exploits; from there, privilege escalation is conducted via an in-built Linux tool that previously, I didn't know had a privilege escalation vulnerability (thanks Xh4H for showing me via this privesc!). Let's begin!
+Traceback was quite the fun box, beginning with a site that appears to have been compromised by a "Xh4H" and defaced as such. Enumeration is key on this machine, as the foothold is almost entirely made up of details that you notice rather than CVEs or logical exploits; from there, privilege escalation is conducted via an in-built Linux tool that previously, I didn't know had a privilege escalation vulnerability (thanks Xh4H for showing me via this privesc!). Let's begin!
 
 >Creator: [Xh4H](https://app.hackthebox.eu/users/21439)  
 Rating: 4.0 stars

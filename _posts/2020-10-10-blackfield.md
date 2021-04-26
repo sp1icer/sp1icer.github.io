@@ -7,7 +7,7 @@ categories:
   - writeups
 tags:
   - htb.hard
-  - active directory
+  - active.directory
   - windows
   - forensics
   - ctf
