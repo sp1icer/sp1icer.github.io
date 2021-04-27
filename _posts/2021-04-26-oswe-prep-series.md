@@ -1,6 +1,6 @@
 ---
 title: "OSWE Prep Series: Intro"
-date: 04-26-2021
+date: 2021-04-26
 classes: wide
 excerpt_separator: <!--more-->
 categories:
