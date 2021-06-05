@@ -94,7 +94,7 @@ Neat, we've established a foothold as `kid`.
 
 ![Kids doing...something. It looks like dancing, I'm not really sure.](/assets/images/scriptkiddie/kid.gif)
 
-And again - _go read Justin's original work._ I'd be remiss if I didn't mention it one last time, it's _that_ good.
+And again - _go read Justin's advisory on GitHub._ I'd be remiss if I didn't mention it one last time, it's _that_ good.
 
 ## >> GET IN LOSER, WE'RE DOING HACKING STUFF
 
@@ -136,7 +136,9 @@ Let's re-visit our LinPEAS input - if you took the time to review carefully, you
 
 ![LinPEAS output that mentions incrontab.](/assets/images/scriptkiddie/linpeas_find_incrontab.png)
 
-After finding and reading some [articles on Hackaday about incrontab](https://hackaday.com/tag/incron/), I came to the conclusion that `incrontab` works essentially the same as `crontab` but with one major caveat - it watches the filesystem rather than a clock. This means that _as soon as_ it senses changes on files or directories. For a lot of people, this is probably the weirdest step - it's not something I've dealt with previously but would _love_ to see more boxes built around that change, especially those that deal with modifying a file for access/privilege escalation. It would be a neat way to keep things clean.
+After finding and reading some [articles on Hackaday about incrontab](https://hackaday.com/tag/incron/), I came to the conclusion that `incrontab` works essentially the same as `crontab` but with one major caveat - it watches the filesystem rather than a clock. This means that _as soon as_ it senses changes on files or directories, it runs whatever command/script you've asked it to. This makes sense - if their intention was to hack back as hinted at with the website, they'd have the site put an IP address into that file once it detected command injection and kick off an nmap near-instantaneously (this is disabled in the box for obvious reasons).
+
+For a lot of people, this is probably the weirdest logical step - it's not something I've personally dealt with previously but would _love_ to see more boxes built around that change, especially those that deal with modifying a file for access/privilege escalation. It would be a neat way to keep things clean since you could immediately execute and then overwrite the file to ensure most everyone sees a clean file, as it was meant to be seen.
 
 ![Mr. Clean dancing while he cleans.](/assets/images/scriptkiddie/clean.gif)
 
