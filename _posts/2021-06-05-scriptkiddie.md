@@ -56,7 +56,7 @@ The first thing that I do in a situation like this is explore what the site does
 
 ![A Rapid7 threat advisory for msfvenom APK Template Command Injection.](/assets/images/scriptkiddie/rapid7_msfvenom_exploit.png)
 
-Interesting - so this means that `msfconsole` already has a module to exploit itself, ironically. We'll go ahead and use that in a second, but first I want to sidebar and go analyze _what_ this exploit is, and how it gets used. And again - _go read Justin's original work._ I'd be remiss if I didn't mention it one last time, it's _that_ good.
+Interesting - so this means that `msfconsole` already has a module to exploit itself, ironically. We'll go ahead and use that in a second, but first I want to sidebar and go analyze _what_ this exploit is, and how it gets used. 
 
 ## >> JUSTIN ANALYZING JUSTIN
 
@@ -93,6 +93,8 @@ Note that we're not getting a listener automatically set up for us - we'll do th
 Neat, we've established a foothold as `kid`.
 
 ![Kids doing...something. It looks like dancing, I'm not really sure.](/assets/images/scriptkiddie/kid.gif)
+
+And again - _go read Justin's original work._ I'd be remiss if I didn't mention it one last time, it's _that_ good.
 
 ## >> GET IN LOSER, WE'RE DOING HACKING STUFF
 
