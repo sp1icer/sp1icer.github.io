@@ -62,14 +62,14 @@ Interesting - so this means that `msfconsole` already has a module to exploit it
 
 Let's sidebar and check out [this advisory from Justin Steven](https://github.com/justinsteven/advisories/blob/master/2020_metasploit_msfvenom_apk_template_cmdi.md), an Australian security researcher. I highly recommend you go read the whole thing - it's a great analysis of the vulnerability itself - but I'm going to do a quick TL;DR here for you since you're already here.
 
-From Justin's GitHub advisory: "Metasploit Framework provides the msfvenom tool for payload generation. For many of the payload types provided by msfvenom, it allows the user to provide a "template" using the -x option." What exactly does this mean? Say you have a pre-generated binary on your preferred platform and would like to use it instead of the default templates from `msfvenom`. By passing it in with the `-X` option, we can instruct `msfvenom` to use _our_ binary as the template instead - this is useful for plenty of reasons I won't get into here. However, old versions of `msfvenom` parsing an Android APK would allow characters that would escape the underlying OS commands and allow for arbitrary command execution. Specifically the following conditions must be met (from Justin's advisory):
+From Justin's GitHub advisory: "Metasploit Framework provides the msfvenom tool for payload generation. For many of the payload types provided by msfvenom, it allows the user to provide a "template" using the -x option." What exactly does this mean? Say you have a pre-generated binary on your preferred platform and would like to use it instead of the default templates from `msfvenom`. By passing it in with the `-X` option, we can instruct `msfvenom` to use _our_ binary as the template instead - this is useful for plenty of reasons I won't get into here. However, old versions of `msfvenom` parsing an Android APK would allow characters that would escape the underlying OS commands and allow for arbitrary command execution. Specifically the following conditions must be met (again, from Justin's advisory):
 
 >If a crafted APK file has a signature with an "Owner" field containing:  
 A single quote (to escape the single-quoted string)  
 Followed by shell metacharacters  
 When that APK file is used as an msfvenom template, arbitrary commands can be executed on the msfvenom user's system.
 
-So essentially if we add in a single quote, it will break the underlying command similar to a SQL injection. Thankfully, Justin's advisory _also_ has a PoC that you can use if you're trying to do the OSCP thing currently, but here's the relevant code section that breaks us out into the OS:
+So essentially if we add in a single quote, it will break the underlying command similar to a SQL injection. Thankfully, Justin's advisory has a PoC that we can use to help speed up our vulnerability analysis (also useful for the OSCP seekers out there). We also need shell metacharacters following said single quote. There's a small bit to go through, but we'll analyze the code section that breaks us out into the OS first:
 
 ```python
 # Change me
@@ -82,7 +82,7 @@ payload_b32 = b32encode(payload.encode()).decode()
 dname = f"CN='|echo {payload_b32} | base32 -d | sh #"
 ```
 
-Looking in there we can see the single quote followed by our OS commands being passed into base32 encoding. Now that we know _how_ it works, let's jump back to `msfconsole` and get our initial shell. Begin by finding the module (it should be `unix/fileformat/metasploit_msfvenom_apk_template_cmd_injection`) and set the options to your current setup. In my environment it looks like this:
+Looking in there we can see the single quote and shell metacharacter (pipe in this case) followed by our OS commands being passed into base32 encoding. Now that we know _how_ it works we can just jump back to `msfconsole` and get our initial shell. Begin by finding the module (it should be `unix/fileformat/metasploit_msfvenom_apk_template_cmd_injection`) and set the options to your current setup. In my environment it looks like this:
 
 ![Setting options for our Metasploit console payload.](/assets/images/scriptkiddie/msfconsole_generate_payload.png)
 
