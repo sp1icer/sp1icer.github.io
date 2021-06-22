@@ -154,7 +154,7 @@ Woah, that's a thing - msfconsole! We can fire it up with `sudo -u root /opt/met
 
 It's also worth running a `whoami` to make sure that you've executed the `sudo` properly and are actually root and not pwn. From here, I hope you know the drill - set up _another_ listener, pop in [a reverse shell from Pentestmonkey](http://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet), and viola - you are root!
 
-## I AM ~~GROOT~~ ROOT
+## >> I AM ~~GROOT~~ ROOT
 
 There we go - after a quick stint we've managed to compromise a webserver that was running Metasploit, with Metasploit, then used Metasploit to break out of Metasploit (yo dawg, I heard you like Metasploit...) I hope you've enjoyed this post, I learned quite a few neat tricks from it - as always, ~~make sure to like and subscribe~~ keep on keeping on and happy hacking!
 
@@ -162,7 +162,7 @@ There we go - after a quick stint we've managed to compromise a webserver that w
   
     
       
-## TL;DR FOR MY LAZY FRIENDS
+## >> TL;DR FOR MY LAZY FRIENDS
 
 These were my short-form notes while doing the box.
 
@@ -194,7 +194,7 @@ These were my short-form notes while doing the box.
 16. root shell
 ```
 
-## REFERENCES
+## >> REFERENCES
 
 In the actual post:  
 [https://library.netapp.com/ecmdocs/ECMP1155586/html/GUID-E306A314-D30E-4ACB-827E-1925A1368DD0.html](https://library.netapp.com/ecmdocs/ECMP1155586/html/GUID-E306A314-D30E-4ACB-827E-1925A1368DD0.html)  
