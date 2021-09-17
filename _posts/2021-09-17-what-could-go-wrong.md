@@ -10,7 +10,7 @@ tags:
   - burnout
 ---
 
->Be wary - triumphant pride precipitates a dizzying fall...
+>Be wary - triumphant pride precipitates a dizzying fall...  
 \- Darkest Dungeon narrator
 
 ## >> HELLO, FRIEND.
