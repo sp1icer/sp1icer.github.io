@@ -98,3 +98,10 @@ asdf
 
 asdf
 
+## >> RESOURCES
+
+In the actual post:
+
+Extra readings:
+
+[SQL Injections Attack and Defense Book](https://www.amazon.com/Injection-Attacks-Defense-Justin-Clarke/dp/1597499633/ref=sr_1_3?dchild=1&keywords=sql+injection&qid=1632336050&sr=8-3)
