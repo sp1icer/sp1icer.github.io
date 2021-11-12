@@ -12,7 +12,7 @@ tags:
 
 ## >> INTRO
 
-asdf
+Hey all, welcome to another post on the PortSwigger Web Academy walkthrough series!
 
 ## >> WHAT IS SQL INJECTION?
 
