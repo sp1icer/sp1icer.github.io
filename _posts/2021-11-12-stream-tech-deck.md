@@ -106,7 +106,9 @@ And that's it! If you press the `HTB Up`, you get a VM + HTB's machines section 
 
 ## >> OUTRO
 
-Cool, now you've got your computer automatin' and hatin', now get to hacking. 
+Cool, now you've got your computer automatin' and hatin', now get to hacking. You've got a super shiny new way to deploy VMs, after all - nothing can stop you now! Get creative and lemme know what creative use cases you come up with! And as always - keep on keeping on and happy hacking!
+
+\- sp1icer
 
 ## >> REFERENCES
 
