@@ -1,6 +1,6 @@
 ---
 title: "Do a Kickflip: Stream Deck Automation FTW"
-date: 2021-11-12
+date: 2021-11-15
 classes: wide
 excerpt_separator: <!--more-->
 categories:
