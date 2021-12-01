@@ -12,7 +12,7 @@ tags:
 
 ## >> INTRO
 
-Hey all, welcome to the first post on the PortSwigger Web Academy walkthrough series! We're going to be diving into the PortSwigger
+Hey all, welcome to the first post on the PortSwigger Web Academy walkthrough series! We're going to be diving into the PortSwigger labs taking on the series of SQL Injection challenges!
 
 ## >> WHAT IS SQL INJECTION?
 
